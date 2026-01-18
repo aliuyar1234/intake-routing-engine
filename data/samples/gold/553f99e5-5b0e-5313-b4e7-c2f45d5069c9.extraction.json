@@ -1,0 +1,69 @@
+{
+  "created_at": "2026-01-17T08:00:11Z",
+  "entities": [
+    {
+      "confidence": 0.95,
+      "entity_type": "ENT_POLICY_NUMBER",
+      "provenance": {
+        "end": 77,
+        "snippet_redacted": "99-0001112",
+        "snippet_sha256": "sha256:122f6f6070642a6275d17eb3b9acc75b8ce7910cabbfcc2c48cb27764c9304a6",
+        "source": "BODY_C14N",
+        "start": 67
+      },
+      "store_mode": "FULL",
+      "value": "99-0001112",
+      "value_redacted": "99-0001112",
+      "value_sha256": "sha256:122f6f6070642a6275d17eb3b9acc75b8ce7910cabbfcc2c48cb27764c9304a6"
+    },
+    {
+      "confidence": 0.9,
+      "entity_type": "ENT_DATE",
+      "provenance": {
+        "end": 34,
+        "snippet_redacted": "2026-01-16",
+        "snippet_sha256": "sha256:8aa91119090e8092ace8971cb213cbd596c48e52418a7edc4ad9f76a8e3b0c3b",
+        "source": "BODY_C14N",
+        "start": 24
+      },
+      "store_mode": "FULL",
+      "value": "2026-01-16",
+      "value_redacted": "2026-01-16",
+      "value_sha256": "sha256:8aa91119090e8092ace8971cb213cbd596c48e52418a7edc4ad9f76a8e3b0c3b"
+    },
+    {
+      "confidence": 0.8,
+      "entity_type": "ENT_LOCATION",
+      "provenance": {
+        "end": 88,
+        "snippet_redacted": "ort: graz",
+        "snippet_sha256": "sha256:169bef485964243889fdb65f259e21161bb81fa45018a6a6568d079ea153ac02",
+        "source": "BODY_C14N",
+        "start": 79
+      },
+      "store_mode": "FULL",
+      "value": "Graz",
+      "value_redacted": "Graz",
+      "value_sha256": "sha256:5af444f3b727fe8ce1056541446c1c20fe174ca2adb52b908ea51ec1a56279a5"
+    },
+    {
+      "confidence": 0.7,
+      "entity_type": "ENT_DOCUMENT_TYPE",
+      "provenance": {
+        "end": 25,
+        "snippet_redacted": "Foto 1: Beschädigtes Dach",
+        "snippet_sha256": "sha256:2407583707bbb6b24bc08afd56bcaa1a5cb017400a6c677e41258c193b43cce7",
+        "source": "ATTACHMENT_TEXT",
+        "start": 0
+      },
+      "store_mode": "FULL",
+      "value": "DOC_PHOTO_EVIDENCE",
+      "value_redacted": "DOC_PHOTO_EVIDENCE",
+      "value_sha256": "sha256:0b53dd8c8978c236e6e2c164e6d9a5c941223cd1af0496b977cf6309d762ae99"
+    }
+  ],
+  "message_id": "553f99e5-5b0e-5313-b4e7-c2f45d5069c9",
+  "run_id": "fe517cff-01a3-561e-9e87-a30af23eacdd",
+  "schema_id": "urn:ieim:schema:extraction-result:1.0.0",
+  "schema_version": "1.0.0"
+}

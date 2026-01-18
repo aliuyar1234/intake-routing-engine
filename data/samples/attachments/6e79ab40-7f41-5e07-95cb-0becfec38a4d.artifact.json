@@ -1,0 +1,31 @@
+{
+  "schema_id": "urn:ieim:schema:attachment-artifact:1.0.0",
+  "schema_version": "1.0.0",
+  "attachment_id": "6e79ab40-7f41-5e07-95cb-0becfec38a4d",
+  "message_id": "553f99e5-5b0e-5313-b4e7-c2f45d5069c9",
+  "filename": "fotobeschreibung.txt",
+  "mime_type": "text/plain",
+  "size_bytes": 55,
+  "sha256": "sha256:508199ecf23af5ebf03aae29f4a02dca450ff0e42cbf8c606e7c67c2fd9d1912",
+  "av_status": "CLEAN",
+  "extracted_text_uri": "data/samples/attachments/6e79ab40-7f41-5e07-95cb-0becfec38a4d.txt",
+  "extracted_text_sha256": "sha256:508199ecf23af5ebf03aae29f4a02dca450ff0e42cbf8c606e7c67c2fd9d1912",
+  "ocr_applied": false,
+  "ocr_confidence": null,
+  "doc_type_candidates": [
+    {
+      "doc_type_label": "DOC_PHOTO_EVIDENCE",
+      "confidence": 0.7,
+      "evidence": [
+        {
+          "source": "ATTACHMENT_TEXT",
+          "start": 0,
+          "end": 25,
+          "snippet_redacted": "Foto 1: Beschädigtes Dach",
+          "snippet_sha256": "sha256:2407583707bbb6b24bc08afd56bcaa1a5cb017400a6c677e41258c193b43cce7"
+        }
+      ]
+    }
+  ],
+  "created_at": "2026-01-17T08:00:11Z"
+}

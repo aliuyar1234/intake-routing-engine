@@ -1,0 +1,30 @@
+{
+  "schema_id": "urn:ieim:schema:normalized-message:1.0.0",
+  "schema_version": "1.0.0",
+  "message_id": "101f1b6d-ea7b-54b4-833d-53e11c190174",
+  "run_id": "3b9d2692-3165-53cf-aeca-fa26ab75a4d9",
+  "ingested_at": "2026-01-17T08:00:07Z",
+  "received_at": "2026-01-17T07:55:07Z",
+  "ingestion_source": "M365_GRAPH",
+  "raw_mime_uri": "data/samples/raw_mime/101f1b6d-ea7b-54b4-833d-53e11c190174.eml",
+  "raw_mime_sha256": "sha256:d22d7cde8b1b788db4e9381d8daea624151c86951c901c38fdfbb73d9e113455",
+  "from_email": "broker@example.broker",
+  "from_display_name": null,
+  "reply_to_email": null,
+  "to_emails": [
+    "service@example.insure"
+  ],
+  "cc_emails": [],
+  "subject": "Im Auftrag unseres Kunden: Anfrage",
+  "subject_c14n": "im auftrag unseres kunden: anfrage",
+  "body_text": "Guten Tag, wir schreiben im Auftrag unseres Kunden. Bitte um Rückruf. Es liegen derzeit keine Nummern vor.",
+  "body_text_c14n": "guten tag, wir schreiben im auftrag unseres kunden. bitte um rückruf. es liegen derzeit keine nummern vor.",
+  "language": "de",
+  "thread_keys": {
+    "internet_message_id": null,
+    "in_reply_to": null,
+    "conversation_id": null
+  },
+  "attachment_ids": [],
+  "message_fingerprint": "sha256:145034fe0495922a49b711a2b35b4465a4fe5a43ee745f46bd350bad45ec41fc"
+}

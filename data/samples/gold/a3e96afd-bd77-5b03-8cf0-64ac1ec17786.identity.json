@@ -1,0 +1,75 @@
+{
+  "created_at": "2026-01-17T08:00:01Z",
+  "decision_hash": "sha256:4cd9c481a476d2576bcc530d82bce992cbbc69abc3b7656cbc7637efe295ae74",
+  "message_id": "a3e96afd-bd77-5b03-8cf0-64ac1ec17786",
+  "run_id": "6ecebf6f-0e75-5f81-9932-b67e3df813a6",
+  "schema_id": "urn:ieim:schema:identity-resolution-result:1.0.0",
+  "schema_version": "1.0.0",
+  "selected_candidate": {
+    "entity_id": "POL-45-1234567",
+    "entity_type": "POLICY",
+    "evidence": [
+      {
+        "end": 65,
+        "snippet_redacted": "polizzennr 45-1234567",
+        "snippet_sha256": "sha256:b87a85410a9baab0286b97d70d0cd8b512f7a7adf1a64a1d37dff532b08d6b57",
+        "source": "BODY_C14N",
+        "start": 44
+      }
+    ],
+    "rank": 1,
+    "score": 0.93,
+    "signals": [
+      {
+        "name": "SIG_POLICY_NUMBER_LOOKUP_MATCH",
+        "strength": 1.0,
+        "value": "45-1234567",
+        "weight": 0.75
+      },
+      {
+        "name": "SIG_SENDER_EMAIL_MATCH",
+        "strength": 0.7,
+        "value": "kunde1@example.test",
+        "weight": 0.2
+      }
+    ]
+  },
+  "status": "IDENTITY_CONFIRMED",
+  "thresholds": {
+    "confirmed_min_margin": 0.2,
+    "confirmed_min_score": 0.9,
+    "probable_min_margin": 0.12,
+    "probable_min_score": 0.75
+  },
+  "top_k": [
+    {
+      "entity_id": "POL-45-1234567",
+      "entity_type": "POLICY",
+      "evidence": [
+        {
+          "end": 65,
+          "snippet_redacted": "polizzennr 45-1234567",
+          "snippet_sha256": "sha256:b87a85410a9baab0286b97d70d0cd8b512f7a7adf1a64a1d37dff532b08d6b57",
+          "source": "BODY_C14N",
+          "start": 44
+        }
+      ],
+      "rank": 1,
+      "score": 0.93,
+      "signals": [
+        {
+          "name": "SIG_POLICY_NUMBER_LOOKUP_MATCH",
+          "strength": 1.0,
+          "value": "45-1234567",
+          "weight": 0.75
+        },
+        {
+          "name": "SIG_SENDER_EMAIL_MATCH",
+          "strength": 0.7,
+          "value": "kunde1@example.test",
+          "weight": 0.2
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "schema_id": "urn:ieim:schema:normalized-message:1.0.0",
+  "schema_version": "1.0.0",
+  "message_id": "83a065a2-733b-5960-b63d-0d3360f5923e",
+  "run_id": "4259d70a-ff16-54a2-8532-18cb4c62b03f",
+  "ingested_at": "2026-01-17T08:00:09Z",
+  "received_at": "2026-01-17T07:55:09Z",
+  "ingestion_source": "M365_GRAPH",
+  "raw_mime_uri": "data/samples/raw_mime/83a065a2-733b-5960-b63d-0d3360f5923e.eml",
+  "raw_mime_sha256": "sha256:1c58b203b51a1278fb25688c4a4923f3204e6b2e1cc0d1ca55ab37b256a0f440",
+  "from_email": "mailer-daemon@example.test",
+  "from_display_name": null,
+  "reply_to_email": null,
+  "to_emails": [
+    "service@example.insure"
+  ],
+  "cc_emails": [],
+  "subject": "Undelivered Mail Returned to Sender",
+  "subject_c14n": "undelivered mail returned to sender",
+  "body_text": "This is the mail system at host example.test. Your message could not be delivered. This is an automatically generated message.",
+  "body_text_c14n": "this is the mail system at host example.test. your message could not be delivered. this is an automatically generated message.",
+  "language": "en",
+  "thread_keys": {
+    "internet_message_id": null,
+    "in_reply_to": null,
+    "conversation_id": null
+  },
+  "attachment_ids": [],
+  "message_fingerprint": "sha256:6335435fd05b5a5a068a0692a81178be26d16eaad8f236cce1a42d266b4190a3"
+}

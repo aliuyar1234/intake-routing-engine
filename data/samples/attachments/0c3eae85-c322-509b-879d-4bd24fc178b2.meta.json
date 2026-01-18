@@ -1,0 +1,11 @@
+{
+  "attachment_id": "0c3eae85-c322-509b-879d-4bd24fc178b2",
+  "filename": "rechnung.txt",
+  "mime_type": "text/plain",
+  "representation": "TEXT_ONLY",
+  "sha256": "sha256:e5d926f82f6e6b858a2b078e33a7dd23983e38f5017fcd7e6787ae2fc585198f",
+  "size_bytes": 51,
+  "source": "SYNTHETIC_TEST_DATA",
+  "av_status": "INFECTED",
+  "extracted_text_file": "data/samples/attachments/0c3eae85-c322-509b-879d-4bd24fc178b2.txt"
+}

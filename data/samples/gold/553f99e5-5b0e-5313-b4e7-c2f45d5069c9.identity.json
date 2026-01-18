@@ -1,0 +1,63 @@
+{
+  "created_at": "2026-01-17T08:00:11Z",
+  "decision_hash": "sha256:538f0dfe15cb5af9cbd9d8140edc37c64674589bc3e72e80b78690cadae6c218",
+  "message_id": "553f99e5-5b0e-5313-b4e7-c2f45d5069c9",
+  "run_id": "fe517cff-01a3-561e-9e87-a30af23eacdd",
+  "schema_id": "urn:ieim:schema:identity-resolution-result:1.0.0",
+  "schema_version": "1.0.0",
+  "selected_candidate": {
+    "entity_id": "POL-99-0001112",
+    "entity_type": "POLICY",
+    "evidence": [
+      {
+        "end": 77,
+        "snippet_redacted": "99-0001112",
+        "snippet_sha256": "sha256:122f6f6070642a6275d17eb3b9acc75b8ce7910cabbfcc2c48cb27764c9304a6",
+        "source": "BODY_C14N",
+        "start": 67
+      }
+    ],
+    "rank": 1,
+    "score": 0.92,
+    "signals": [
+      {
+        "name": "SIG_POLICY_NUMBER_LOOKUP_MATCH",
+        "strength": 1.0,
+        "value": "99-0001112",
+        "weight": 0.75
+      }
+    ]
+  },
+  "status": "IDENTITY_CONFIRMED",
+  "thresholds": {
+    "confirmed_min_margin": 0.15,
+    "confirmed_min_score": 0.85,
+    "probable_min_margin": 0.1,
+    "probable_min_score": 0.7
+  },
+  "top_k": [
+    {
+      "entity_id": "POL-99-0001112",
+      "entity_type": "POLICY",
+      "evidence": [
+        {
+          "end": 77,
+          "snippet_redacted": "99-0001112",
+          "snippet_sha256": "sha256:122f6f6070642a6275d17eb3b9acc75b8ce7910cabbfcc2c48cb27764c9304a6",
+          "source": "BODY_C14N",
+          "start": 67
+        }
+      ],
+      "rank": 1,
+      "score": 0.92,
+      "signals": [
+        {
+          "name": "SIG_POLICY_NUMBER_LOOKUP_MATCH",
+          "strength": 1.0,
+          "value": "99-0001112",
+          "weight": 0.75
+        }
+      ]
+    }
+  ]
+}

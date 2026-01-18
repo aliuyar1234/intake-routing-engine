@@ -1,0 +1,77 @@
+{
+  "created_at": "2026-01-17T08:00:02Z",
+  "decision_hash": "sha256:5a404668b1522cf693fa3b482e3e25d8459e4fda54431f40b81ce4db8e2118fd",
+  "intents": [
+    {
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "end": 12,
+          "snippet_redacted": "nachreichung",
+          "snippet_sha256": "sha256:a9cdb574b8065854d5bd9b0d22cb772a2bac6e79f2b70549751f500bed7be1b9",
+          "source": "SUBJECT_C14N",
+          "start": 0
+        }
+      ],
+      "label": "INTENT_CLAIM_UPDATE"
+    },
+    {
+      "confidence": 0.55,
+      "evidence": [
+        {
+          "end": 12,
+          "snippet_redacted": "anbei",
+          "snippet_sha256": "sha256:62c41edabb982dd546331bbf6f9d74efd85c196f07e395f62fa63cef18b98477",
+          "source": "BODY_C14N",
+          "start": 7
+        }
+      ],
+      "label": "INTENT_DOCUMENT_SUBMISSION"
+    }
+  ],
+  "message_id": "e43d7757-c717-5ca0-b306-c1ece970fc3b",
+  "model_info": null,
+  "primary_intent": {
+    "confidence": 0.9,
+    "evidence": [
+      {
+        "end": 12,
+        "snippet_redacted": "nachreichung",
+        "snippet_sha256": "sha256:a9cdb574b8065854d5bd9b0d22cb772a2bac6e79f2b70549751f500bed7be1b9",
+        "source": "SUBJECT_C14N",
+        "start": 0
+      }
+    ],
+    "label": "INTENT_CLAIM_UPDATE"
+  },
+  "product_line": {
+    "confidence": 0.6,
+    "evidence": [
+      {
+        "end": 24,
+        "snippet_redacted": "schaden",
+        "snippet_sha256": "sha256:d93a77d1db0f142075ae60feb7235b85adbc675f2fc86f5f945352974c51714a",
+        "source": "SUBJECT_C14N",
+        "start": 17
+      }
+    ],
+    "label": "PROD_AUTO"
+  },
+  "risk_flags": [],
+  "run_id": "08646473-3683-51d5-9df9-2d40c4dd227d",
+  "schema_id": "urn:ieim:schema:classification-result:1.0.0",
+  "schema_version": "1.0.0",
+  "urgency": {
+    "confidence": 0.6,
+    "evidence": [
+      {
+        "end": 77,
+        "snippet_redacted": "bitte bestätigen",
+        "snippet_sha256": "sha256:2082b8af0a3b90be1374e36ad9c7e7a8516eb82e67814f74415d197e6bc36ba1",
+        "source": "BODY_C14N",
+        "start": 61
+      }
+    ],
+    "label": "URG_NORMAL"
+  }
+}

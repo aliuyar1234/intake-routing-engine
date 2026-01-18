@@ -1,0 +1,17 @@
+{
+  "created_at": "2026-01-17T08:00:05Z",
+  "decision_hash": "sha256:e229857a2ee664de9840da9b931e23f63d4bf8b3d1b5a93a4b696efde13793b1",
+  "message_id": "6e8c601c-2771-56e2-be1b-361ffc64a9b9",
+  "run_id": "a652b8df-ffd2-5bca-b295-4e2f65a07904",
+  "schema_id": "urn:ieim:schema:identity-resolution-result:1.0.0",
+  "schema_version": "1.0.0",
+  "selected_candidate": null,
+  "status": "IDENTITY_NEEDS_REVIEW",
+  "thresholds": {
+    "confirmed_min_margin": 0.2,
+    "confirmed_min_score": 0.9,
+    "probable_min_margin": 0.12,
+    "probable_min_score": 0.75
+  },
+  "top_k": []
+}

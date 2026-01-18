@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ieim:schema:identity-resolution-result:1.0.0",
+  "title": "IdentityResolutionResult",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_id",
+    "schema_version",
+    "message_id",
+    "run_id",
+    "status",
+    "top_k",
+    "thresholds",
+    "created_at",
+    "decision_hash"
+  ],
+  "properties": {
+    "schema_id": { "const": "urn:ieim:schema:identity-resolution-result:1.0.0" },
+    "schema_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+
+    "message_id": { "type": "string", "minLength": 16 },
+    "run_id": { "type": "string", "minLength": 16 },
+
+    "status": { "type": "string", "pattern": "^IDENTITY_[A-Z0-9_]+$" },
+
+    "selected_candidate": {
+      "anyOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/candidate" }
+      ]
+    },
+
+    "top_k": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/candidate" }
+    },
+
+    "thresholds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "confirmed_min_score",
+        "confirmed_min_margin",
+        "probable_min_score",
+        "probable_min_margin"
+      ],
+      "properties": {
+        "confirmed_min_score": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "confirmed_min_margin": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "probable_min_score": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "probable_min_margin": { "type": "number", "minimum": 0.0, "maximum": 1.0 }
+      }
+    },
+
+    "created_at": { "type": "string", "format": "date-time" },
+    "decision_hash": { "$ref": "#/$defs/sha256_ref" }
+  },
+  "$defs": {
+    "sha256_ref": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "evidence_span": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "start", "end", "snippet_redacted", "snippet_sha256"],
+      "properties": {
+        "source": { "type": "string", "pattern": "^[A-Z0-9_]+$" },
+        "start": { "type": "integer", "minimum": 0 },
+        "end": { "type": "integer", "minimum": 0 },
+        "snippet_redacted": { "type": "string", "maxLength": 400 },
+        "snippet_sha256": { "$ref": "#/$defs/sha256_ref" }
+      }
+    },
+    "signal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "strength", "weight"],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[A-Z0-9_]+$" },
+        "strength": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "weight": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "value": { "type": ["string", "number", "null"], "maxLength": 300 }
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rank", "entity_type", "entity_id", "score", "signals", "evidence"],
+      "properties": {
+        "rank": { "type": "integer", "minimum": 1 },
+        "entity_type": { "type": "string", "pattern": "^[A-Z0-9_]+$" },
+        "entity_id": { "type": "string", "minLength": 3, "maxLength": 200 },
+        "score": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "signals": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/signal" }
+        },
+        "evidence": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/evidence_span" }
+        }
+      }
+    }
+  }
+}

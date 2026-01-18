@@ -1,0 +1,19 @@
+{
+  "message_id": "665506c4-f415-53b2-bfd9-4a70f9534900",
+  "run_id": "0ea43aa6-c5bf-5746-9ef0-46404e99ee5d",
+  "expected_stages": [
+    "INGEST",
+    "NORMALIZE",
+    "ATTACHMENTS",
+    "IDENTITY",
+    "CLASSIFY",
+    "EXTRACT",
+    "ROUTE"
+  ],
+  "must_include_decision_hash_stages": [
+    "IDENTITY",
+    "CLASSIFY",
+    "ROUTE"
+  ],
+  "must_be_append_only": true
+}

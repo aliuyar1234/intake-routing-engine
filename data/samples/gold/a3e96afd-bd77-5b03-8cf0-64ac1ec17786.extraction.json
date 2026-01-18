@@ -1,0 +1,54 @@
+{
+  "created_at": "2026-01-17T08:00:01Z",
+  "entities": [
+    {
+      "confidence": 0.95,
+      "entity_type": "ENT_POLICY_NUMBER",
+      "provenance": {
+        "end": 65,
+        "snippet_redacted": "45-1234567",
+        "snippet_sha256": "sha256:a55227b280e0207ae22bd912c9eac29b5710aff3849da9b63e0be68630fe95a7",
+        "source": "BODY_C14N",
+        "start": 55
+      },
+      "store_mode": "FULL",
+      "value": "45-1234567",
+      "value_redacted": "45-1234567",
+      "value_sha256": "sha256:a55227b280e0207ae22bd912c9eac29b5710aff3849da9b63e0be68630fe95a7"
+    },
+    {
+      "confidence": 0.9,
+      "entity_type": "ENT_DATE",
+      "provenance": {
+        "end": 87,
+        "snippet_redacted": "2026-01-15",
+        "snippet_sha256": "sha256:b94a975b4c4909c341e1e21579d655a38839844f91296c2e6baff25104d2c748",
+        "source": "BODY_C14N",
+        "start": 77
+      },
+      "store_mode": "FULL",
+      "value": "2026-01-15",
+      "value_redacted": "2026-01-15",
+      "value_sha256": "sha256:b94a975b4c4909c341e1e21579d655a38839844f91296c2e6baff25104d2c748"
+    },
+    {
+      "confidence": 0.8,
+      "entity_type": "ENT_LOCATION",
+      "provenance": {
+        "end": 95,
+        "snippet_redacted": "wien",
+        "snippet_sha256": "sha256:403d7e0552191717c1f56a961f49bee40c52ea0ba9a674a58eb9b1eaf961f856",
+        "source": "BODY_C14N",
+        "start": 91
+      },
+      "store_mode": "FULL",
+      "value": "Wien",
+      "value_redacted": "Wien",
+      "value_sha256": "sha256:10e0e9a4c8c78eb44648788444801b4b8abce6e33fbc296cded0ac109241378d"
+    }
+  ],
+  "message_id": "a3e96afd-bd77-5b03-8cf0-64ac1ec17786",
+  "run_id": "6ecebf6f-0e75-5f81-9932-b67e3df813a6",
+  "schema_id": "urn:ieim:schema:extraction-result:1.0.0",
+  "schema_version": "1.0.0"
+}

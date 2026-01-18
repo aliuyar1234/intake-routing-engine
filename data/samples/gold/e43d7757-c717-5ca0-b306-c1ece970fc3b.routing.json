@@ -1,0 +1,20 @@
+{
+  "actions": [
+    "CREATE_CASE",
+    "ATTACH_ORIGINAL_EMAIL",
+    "ATTACH_ALL_FILES"
+  ],
+  "created_at": "2026-01-17T08:00:02Z",
+  "decision_hash": "sha256:16eb44e89a75a015d952ff19cefcdbfcc8027d49a63fc0b0f55247582e81e985",
+  "fail_closed": false,
+  "fail_closed_reason": null,
+  "message_id": "e43d7757-c717-5ca0-b306-c1ece970fc3b",
+  "priority": 3,
+  "queue_id": "QUEUE_CLAIMS_AUTO",
+  "rule_id": "ROUTE_CLAIMS_AUTO",
+  "rule_version": "1.4.1",
+  "run_id": "08646473-3683-51d5-9df9-2d40c4dd227d",
+  "schema_id": "urn:ieim:schema:routing-decision:1.0.0",
+  "schema_version": "1.0.0",
+  "sla_id": "SLA_1BD"
+}

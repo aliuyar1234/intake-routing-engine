@@ -1,0 +1,91 @@
+{
+  "created_at": "2026-01-17T08:00:05Z",
+  "decision_hash": "sha256:a3386f49ff07a983e4f38cb0802e0d7f7fa971eb1b406e8cc72d327ce4f9a820",
+  "intents": [
+    {
+      "confidence": 0.96,
+      "evidence": [
+        {
+          "end": 25,
+          "snippet_redacted": "anwalt",
+          "snippet_sha256": "sha256:6641170f85113d0710301b6468652f078792cbc8e8ff8feb194b7db16299739c",
+          "source": "SUBJECT_C14N",
+          "start": 19
+        }
+      ],
+      "label": "INTENT_LEGAL"
+    },
+    {
+      "confidence": 0.7,
+      "evidence": [
+        {
+          "end": 36,
+          "snippet_redacted": "anbei",
+          "snippet_sha256": "sha256:62c41edabb982dd546331bbf6f9d74efd85c196f07e395f62fa63cef18b98477",
+          "source": "BODY_C14N",
+          "start": 31
+        }
+      ],
+      "label": "INTENT_DOCUMENT_SUBMISSION"
+    }
+  ],
+  "message_id": "6e8c601c-2771-56e2-be1b-361ffc64a9b9",
+  "model_info": null,
+  "primary_intent": {
+    "confidence": 0.96,
+    "evidence": [
+      {
+        "end": 25,
+        "snippet_redacted": "anwalt",
+        "snippet_sha256": "sha256:6641170f85113d0710301b6468652f078792cbc8e8ff8feb194b7db16299739c",
+        "source": "SUBJECT_C14N",
+        "start": 19
+      }
+    ],
+    "label": "INTENT_LEGAL"
+  },
+  "product_line": {
+    "confidence": 0.4,
+    "evidence": [
+      {
+        "end": 20,
+        "snippet_redacted": "sehr geehrte damen u",
+        "snippet_sha256": "sha256:dcc493e64db922c8a4febf0c3716d2e58a5eb58205cfa3297e71308b87c6df47",
+        "source": "BODY_C14N",
+        "start": 0
+      }
+    ],
+    "label": "PROD_UNKNOWN"
+  },
+  "risk_flags": [
+    {
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "end": 104,
+          "snippet_redacted": "frist",
+          "snippet_sha256": "sha256:ac372c3e841b3e84c40abb9b2c8d7230c732576309fd2fd609ae873516bde90f",
+          "source": "BODY_C14N",
+          "start": 99
+        }
+      ],
+      "label": "RISK_LEGAL_THREAT"
+    }
+  ],
+  "run_id": "a652b8df-ffd2-5bca-b295-4e2f65a07904",
+  "schema_id": "urn:ieim:schema:classification-result:1.0.0",
+  "schema_version": "1.0.0",
+  "urgency": {
+    "confidence": 0.85,
+    "evidence": [
+      {
+        "end": 104,
+        "snippet_redacted": "frist",
+        "snippet_sha256": "sha256:ac372c3e841b3e84c40abb9b2c8d7230c732576309fd2fd609ae873516bde90f",
+        "source": "BODY_C14N",
+        "start": 99
+      }
+    ],
+    "label": "URG_CRITICAL"
+  }
+}

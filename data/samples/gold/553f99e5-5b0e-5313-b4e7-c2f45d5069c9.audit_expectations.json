@@ -1,0 +1,14 @@
+{
+  "expected_stages": [
+    "INGEST",
+    "NORMALIZE",
+    "ATTACHMENTS",
+    "IDENTITY",
+    "CLASSIFY",
+    "EXTRACT",
+    "ROUTE",
+    "CASE"
+  ],
+  "expect_fail_closed": false,
+  "expect_block_case_create": false
+}

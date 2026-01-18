@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ieim:schema:attachment-artifact:1.0.0",
+  "title": "AttachmentArtifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_id",
+    "schema_version",
+    "attachment_id",
+    "message_id",
+    "filename",
+    "mime_type",
+    "size_bytes",
+    "sha256",
+    "av_status",
+    "ocr_applied",
+    "created_at",
+    "doc_type_candidates"
+  ],
+  "properties": {
+    "schema_id": { "const": "urn:ieim:schema:attachment-artifact:1.0.0" },
+    "schema_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+
+    "attachment_id": { "type": "string", "minLength": 16 },
+    "message_id": { "type": "string", "minLength": 16 },
+
+    "filename": { "type": "string", "maxLength": 400 },
+    "mime_type": { "type": "string", "maxLength": 200 },
+    "size_bytes": { "type": "integer", "minimum": 0 },
+    "sha256": { "$ref": "#/$defs/sha256_ref" },
+
+    "av_status": { "type": "string", "pattern": "^[A-Z0-9_]+$" },
+
+    "extracted_text_uri": { "type": ["string", "null"], "minLength": 0 },
+    "extracted_text_sha256": { "type": ["string", "null"], "pattern": "^(sha256:[0-9a-f]{64})?$" },
+
+    "ocr_applied": { "type": "boolean" },
+    "ocr_confidence": { "type": ["number", "null"], "minimum": 0.0, "maximum": 1.0 },
+
+    "doc_type_candidates": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/doc_type_candidate" }
+    },
+
+    "created_at": { "type": "string", "format": "date-time" }
+  },
+  "$defs": {
+    "sha256_ref": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "evidence_span": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "start", "end", "snippet_redacted", "snippet_sha256"],
+      "properties": {
+        "source": { "type": "string", "pattern": "^[A-Z0-9_]+$" },
+        "start": { "type": "integer", "minimum": 0 },
+        "end": { "type": "integer", "minimum": 0 },
+        "snippet_redacted": { "type": "string", "maxLength": 400 },
+        "snippet_sha256": { "$ref": "#/$defs/sha256_ref" }
+      }
+    },
+    "doc_type_candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["doc_type_label", "confidence", "evidence"],
+      "properties": {
+        "doc_type_label": { "type": "string", "pattern": "^DOC_[A-Z0-9_]+$" },
+        "confidence": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "evidence": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/evidence_span" }
+        }
+      }
+    }
+  }
+}

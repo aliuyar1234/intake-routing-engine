@@ -1,0 +1,31 @@
+{
+  "schema_id": "urn:ieim:schema:attachment-artifact:1.0.0",
+  "schema_version": "1.0.0",
+  "attachment_id": "0808e0a2-1dc0-57e0-9689-bba16bd6b606",
+  "message_id": "af708e2b-42d1-5b36-81b3-70f1aa978073",
+  "filename": "sepa_hinweis.txt",
+  "mime_type": "text/plain",
+  "size_bytes": 77,
+  "sha256": "sha256:349e491f038165fa80d2babadecc9fda9f35088cb0165c770153c71fa72e41af",
+  "av_status": "CLEAN",
+  "extracted_text_uri": "data/samples/attachments/0808e0a2-1dc0-57e0-9689-bba16bd6b606.txt",
+  "extracted_text_sha256": "sha256:349e491f038165fa80d2babadecc9fda9f35088cb0165c770153c71fa72e41af",
+  "ocr_applied": false,
+  "ocr_confidence": null,
+  "doc_type_candidates": [
+    {
+      "doc_type_label": "DOC_BANK_DETAILS",
+      "confidence": 0.7,
+      "evidence": [
+        {
+          "source": "ATTACHMENT_TEXT",
+          "start": 41,
+          "end": 52,
+          "snippet_redacted": "rückzahlung",
+          "snippet_sha256": "sha256:eb4bacf0ccd348af8b16ed63dd9669c7c144c94a250381fedf50909531267f4b"
+        }
+      ]
+    }
+  ],
+  "created_at": "2026-01-17T08:00:00Z"
+}

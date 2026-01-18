@@ -1,0 +1,2 @@
+"""Mail ingestion adapters."""
+

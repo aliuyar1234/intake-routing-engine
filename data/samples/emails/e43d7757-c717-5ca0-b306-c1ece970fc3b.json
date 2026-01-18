@@ -1,0 +1,30 @@
+{
+  "schema_id": "urn:ieim:schema:normalized-message:1.0.0",
+  "schema_version": "1.0.0",
+  "message_id": "e43d7757-c717-5ca0-b306-c1ece970fc3b",
+  "run_id": "08646473-3683-51d5-9df9-2d40c4dd227d",
+  "ingested_at": "2026-01-17T08:00:02Z",
+  "received_at": "2026-01-17T07:55:02Z",
+  "ingestion_source": "M365_GRAPH",
+  "raw_mime_uri": "data/samples/raw_mime/e43d7757-c717-5ca0-b306-c1ece970fc3b.eml",
+  "raw_mime_sha256": "sha256:61144aabc3afb0b582a4a4abd337caf11d8ac93fe6ac823af30867529ce5eaea",
+  "from_email": "kunde2@example.test",
+  "from_display_name": null,
+  "reply_to_email": null,
+  "to_emails": [
+    "claims@example.insure"
+  ],
+  "cc_emails": [],
+  "subject": "Nachreichung zum Schaden CLM-2025-9911",
+  "subject_c14n": "nachreichung zum schaden clm-2025-9911",
+  "body_text": "Hallo, anbei eine Ergänzung zu meinem Schaden CLM-2025-9911. Bitte bestätigen Sie den Eingang.",
+  "body_text_c14n": "hallo, anbei eine ergänzung zu meinem schaden clm-2025-9911. bitte bestätigen sie den eingang.",
+  "language": "de",
+  "thread_keys": {
+    "internet_message_id": null,
+    "in_reply_to": null,
+    "conversation_id": null
+  },
+  "attachment_ids": [],
+  "message_fingerprint": "sha256:94dd9d26b72c2f6c24ed983b2c8c3679da6bcea3faafe27692dfaedd7163e98a"
+}

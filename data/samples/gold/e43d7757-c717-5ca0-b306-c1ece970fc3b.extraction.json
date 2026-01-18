@@ -1,0 +1,24 @@
+{
+  "created_at": "2026-01-17T08:00:02Z",
+  "entities": [
+    {
+      "confidence": 0.95,
+      "entity_type": "ENT_CLAIM_NUMBER",
+      "provenance": {
+        "end": 38,
+        "snippet_redacted": "clm-2025-9911",
+        "snippet_sha256": "sha256:3b6a9e6e4a80fe6de1148cfce7a4fd5bbca97c9bbb0b64b7ebf02314cd192dbf",
+        "source": "SUBJECT_C14N",
+        "start": 25
+      },
+      "store_mode": "FULL",
+      "value": "CLM-2025-9911",
+      "value_redacted": "CLM-2025-9911",
+      "value_sha256": "sha256:8e23e2e8fddd9db69fcc9a25b368679f1cf250786d19e246c53e83ad42c79065"
+    }
+  ],
+  "message_id": "e43d7757-c717-5ca0-b306-c1ece970fc3b",
+  "run_id": "08646473-3683-51d5-9df9-2d40c4dd227d",
+  "schema_id": "urn:ieim:schema:extraction-result:1.0.0",
+  "schema_version": "1.0.0"
+}

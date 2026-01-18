@@ -1,0 +1,19 @@
+{
+  "actions": [
+    "CREATE_CASE",
+    "ATTACH_ORIGINAL_EMAIL"
+  ],
+  "created_at": "2026-01-17T08:00:03Z",
+  "decision_hash": "sha256:48b0119e01ff83a1ae19de48ca05b28d22f0c3a8ae28f9e1154e6210206bbff9",
+  "fail_closed": false,
+  "fail_closed_reason": null,
+  "message_id": "67205626-a488-5439-9e1f-7c9717ee5e3b",
+  "priority": 1,
+  "queue_id": "QUEUE_PRIVACY_DSR",
+  "rule_id": "ROUTE_GDPR_REQUEST",
+  "rule_version": "1.4.1",
+  "run_id": "28cc5831-a6b7-5ee3-9cb4-a47d97674179",
+  "schema_id": "urn:ieim:schema:routing-decision:1.0.0",
+  "schema_version": "1.0.0",
+  "sla_id": "SLA_1H"
+}

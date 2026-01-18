@@ -1,0 +1,77 @@
+{
+  "created_at": "2026-01-17T08:00:11Z",
+  "decision_hash": "sha256:0a0f2c4459d462964680909469d845650c281ddb46f9d3c29877244956fcda27",
+  "intents": [
+    {
+      "confidence": 0.87,
+      "evidence": [
+        {
+          "end": 12,
+          "snippet_redacted": "sturmschaden",
+          "snippet_sha256": "sha256:7d85fa189f0b8438cc9d28d0401b40ee0a9da84667aa381bff0ca2f5f1e6b67f",
+          "source": "SUBJECT_C14N",
+          "start": 0
+        }
+      ],
+      "label": "INTENT_CLAIM_NEW"
+    },
+    {
+      "confidence": 0.65,
+      "evidence": [
+        {
+          "end": 117,
+          "snippet_redacted": "anbei eine fotobeschreibung",
+          "snippet_sha256": "sha256:b090c51e60dbffe2bd65bda01a0a7b2c79ad56dd8d8930bbfc414ccb1f4af7a6",
+          "source": "BODY_C14N",
+          "start": 90
+        }
+      ],
+      "label": "INTENT_DOCUMENT_SUBMISSION"
+    }
+  ],
+  "message_id": "553f99e5-5b0e-5313-b4e7-c2f45d5069c9",
+  "model_info": null,
+  "primary_intent": {
+    "confidence": 0.87,
+    "evidence": [
+      {
+        "end": 12,
+        "snippet_redacted": "sturmschaden",
+        "snippet_sha256": "sha256:7d85fa189f0b8438cc9d28d0401b40ee0a9da84667aa381bff0ca2f5f1e6b67f",
+        "source": "SUBJECT_C14N",
+        "start": 0
+      }
+    ],
+    "label": "INTENT_CLAIM_NEW"
+  },
+  "product_line": {
+    "confidence": 0.75,
+    "evidence": [
+      {
+        "end": 43,
+        "snippet_redacted": "dach",
+        "snippet_sha256": "sha256:1f77f8a3d9f163b78b23457a8e94e6340e124cf25c7031b2a29227c8ea07c564",
+        "source": "BODY_C14N",
+        "start": 39
+      }
+    ],
+    "label": "PROD_PROPERTY"
+  },
+  "risk_flags": [],
+  "run_id": "fe517cff-01a3-561e-9e87-a30af23eacdd",
+  "schema_id": "urn:ieim:schema:classification-result:1.0.0",
+  "schema_version": "1.0.0",
+  "urgency": {
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "end": 34,
+        "snippet_redacted": "2026-01-16",
+        "snippet_sha256": "sha256:8aa91119090e8092ace8971cb213cbd596c48e52418a7edc4ad9f76a8e3b0c3b",
+        "source": "BODY_C14N",
+        "start": 24
+      }
+    ],
+    "label": "URG_NORMAL"
+  }
+}

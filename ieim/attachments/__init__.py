@@ -1,0 +1,2 @@
+"""Attachment processing stage."""
+

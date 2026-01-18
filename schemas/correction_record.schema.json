@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ieim:schema:correction-record:1.0.0",
+  "title": "CorrectionRecord",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_id",
+    "schema_version",
+    "correction_id",
+    "message_id",
+    "run_id",
+    "created_at",
+    "actor_type",
+    "corrections"
+  ],
+  "properties": {
+    "schema_id": { "const": "urn:ieim:schema:correction-record:1.0.0" },
+    "schema_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+
+    "correction_id": { "type": "string", "minLength": 16 },
+    "message_id": { "type": "string", "minLength": 16 },
+    "run_id": { "type": "string", "minLength": 16 },
+    "review_item_id": { "type": ["string", "null"], "minLength": 16 },
+
+    "actor_type": { "type": "string", "pattern": "^[A-Z0-9_]+$" },
+    "actor_id": { "type": ["string", "null"], "maxLength": 200 },
+    "created_at": { "type": "string", "format": "date-time" },
+
+    "note": { "type": ["string", "null"], "maxLength": 2000 },
+
+    "artifact_refs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/artifact_ref" }
+    },
+
+    "corrections": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/correction_entry" }
+    }
+  },
+  "$defs": {
+    "sha256_ref": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "artifact_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_id", "uri", "sha256"],
+      "properties": {
+        "schema_id": { "type": "string", "maxLength": 200 },
+        "uri": { "type": "string" },
+        "sha256": { "$ref": "#/$defs/sha256_ref" }
+      }
+    },
+    "evidence_span": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "start", "end", "snippet_redacted", "snippet_sha256"],
+      "properties": {
+        "source": { "type": "string", "pattern": "^[A-Z0-9_]+$" },
+        "start": { "type": "integer", "minimum": 0 },
+        "end": { "type": "integer", "minimum": 0 },
+        "snippet_redacted": { "type": "string", "maxLength": 400 },
+        "snippet_sha256": { "$ref": "#/$defs/sha256_ref" }
+      }
+    },
+    "json_patch_op": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op", "path"],
+      "properties": {
+        "op": { "type": "string", "enum": ["add", "remove", "replace"] },
+        "path": { "type": "string", "minLength": 1 },
+        "value": {},
+        "value_sha256": { "type": ["string", "null"], "pattern": "^(sha256:[0-9a-f]{64})?$" },
+        "redaction_note": { "type": ["string", "null"], "maxLength": 200 }
+      }
+    },
+    "correction_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target_stage", "patch"],
+      "properties": {
+        "target_stage": { "type": "string", "pattern": "^[A-Z0-9_]+$" },
+        "patch": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/json_patch_op" }
+        },
+        "justification": { "type": ["string", "null"], "maxLength": 2000 },
+        "evidence": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/evidence_span" }
+        }
+      }
+    }
+  }
+}
+

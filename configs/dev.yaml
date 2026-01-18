@@ -1,0 +1,98 @@
+pack:
+  system_id: IEIM
+  canonical_spec_semver: "1.0.1"
+
+runtime:
+  determinism_mode: true
+  supported_languages:
+    - de
+    - en
+
+incident:
+  force_review: false
+  force_review_queue_id: "QUEUE_INTAKE_REVIEW_GENERAL"
+  disable_llm: false
+  block_case_create_risk_flags_any: []
+
+identity:
+  top_k: 5
+  thresholds:
+    confirmed_min_score: 0.85
+    confirmed_min_margin: 0.15
+    probable_min_score: 0.70
+    probable_min_margin: 0.10
+  shared_mailbox_penalty: 0.15
+  signal_weights:
+    SIG_POLICY_NUMBER_LOOKUP_MATCH:
+      weight: 0.75
+      strength: 1.0
+    SIG_CLAIM_NUMBER_LOOKUP_MATCH:
+      weight: 0.80
+      strength: 1.0
+    SIG_SENDER_EMAIL_MATCH:
+      weight: 0.20
+      strength: 0.70
+  scoring:
+    intercept: 0.8075
+    slope: 0.15
+
+classification:
+  min_confidence_for_auto: 0.75
+  rules_version: "1.0.0"
+  llm:
+    enabled: false
+    provider: "disabled"
+    model_name: "disabled"
+    model_version: "disabled"
+    prompt_versions:
+      classify: "1.0.0"
+      extract: "1.0.0"
+    token_budgets:
+      classify: 700
+      extract: 900
+    max_calls_per_day: 0
+
+extraction:
+  iban_policy:
+    enabled: true
+    store_mode: "HASH_ONLY"
+
+routing:
+  ruleset_path: "configs/routing_tables/routing_rules_v1.4.1.json"
+  ruleset_version: "1.4.1"
+
+retention:
+  raw_days: 30
+  normalized_days: 90
+  audit_years: 2
+
+rbac:
+  role_mappings:
+    agent:
+      can_view_raw: false
+      can_view_audit: true
+      can_approve_drafts: false
+    reviewer:
+      can_view_raw: true
+      can_view_audit: true
+      can_approve_drafts: true
+    privacy_officer:
+      can_view_raw: true
+      can_view_audit: true
+      can_approve_drafts: true
+    security_officer:
+      can_view_raw: true
+      can_view_audit: true
+      can_approve_drafts: false
+    administrator:
+      can_view_raw: true
+      can_view_audit: true
+      can_approve_drafts: true
+
+cost_controls:
+  llm_cache_ttl_seconds: 604800
+  max_emails_per_minute: 300
+
+observability:
+  metrics_enabled: true
+  tracing_enabled: true

@@ -1,0 +1,78 @@
+{
+  "created_at": "2026-01-17T08:00:03Z",
+  "decision_hash": "sha256:48ff60f3436172f1ad0b97290d3ad04ae2dba49498bf2a7177a76085566298d2",
+  "intents": [
+    {
+      "confidence": 0.98,
+      "evidence": [
+        {
+          "end": 19,
+          "snippet_redacted": "dsgvo",
+          "snippet_sha256": "sha256:0ae993e31821c065c11b252257ffcf2d7be9133641a83c8a55c0a522ca193ca6",
+          "source": "SUBJECT_C14N",
+          "start": 14
+        }
+      ],
+      "label": "INTENT_GDPR_REQUEST"
+    }
+  ],
+  "message_id": "67205626-a488-5439-9e1f-7c9717ee5e3b",
+  "model_info": null,
+  "primary_intent": {
+    "confidence": 0.98,
+    "evidence": [
+      {
+        "end": 19,
+        "snippet_redacted": "dsgvo",
+        "snippet_sha256": "sha256:0ae993e31821c065c11b252257ffcf2d7be9133641a83c8a55c0a522ca193ca6",
+        "source": "SUBJECT_C14N",
+        "start": 14
+      }
+    ],
+    "label": "INTENT_GDPR_REQUEST"
+  },
+  "product_line": {
+    "confidence": 0.5,
+    "evidence": [
+      {
+        "end": 19,
+        "snippet_redacted": "dsgvo",
+        "snippet_sha256": "sha256:0ae993e31821c065c11b252257ffcf2d7be9133641a83c8a55c0a522ca193ca6",
+        "source": "SUBJECT_C14N",
+        "start": 14
+      }
+    ],
+    "label": "PROD_UNKNOWN"
+  },
+  "risk_flags": [
+    {
+      "confidence": 0.8,
+      "evidence": [
+        {
+          "end": 34,
+          "snippet_redacted": "dsgvo",
+          "snippet_sha256": "sha256:0ae993e31821c065c11b252257ffcf2d7be9133641a83c8a55c0a522ca193ca6",
+          "source": "BODY_C14N",
+          "start": 29
+        }
+      ],
+      "label": "RISK_PRIVACY_SENSITIVE"
+    }
+  ],
+  "run_id": "28cc5831-a6b7-5ee3-9cb4-a47d97674179",
+  "schema_id": "urn:ieim:schema:classification-result:1.0.0",
+  "schema_version": "1.0.0",
+  "urgency": {
+    "confidence": 0.8,
+    "evidence": [
+      {
+        "end": 23,
+        "snippet_redacted": "auskunft",
+        "snippet_sha256": "sha256:9693b2f166ae8c3ce3ff6df28558cc225f19b36486493ec4b1a199c0384e1868",
+        "source": "BODY_C14N",
+        "start": 15
+      }
+    ],
+    "label": "URG_CRITICAL"
+  }
+}

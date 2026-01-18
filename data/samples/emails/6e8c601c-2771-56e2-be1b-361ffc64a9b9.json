@@ -1,0 +1,32 @@
+{
+  "schema_id": "urn:ieim:schema:normalized-message:1.0.0",
+  "schema_version": "1.0.0",
+  "message_id": "6e8c601c-2771-56e2-be1b-361ffc64a9b9",
+  "run_id": "a652b8df-ffd2-5bca-b295-4e2f65a07904",
+  "ingested_at": "2026-01-17T08:00:05Z",
+  "received_at": "2026-01-17T07:55:05Z",
+  "ingestion_source": "M365_GRAPH",
+  "raw_mime_uri": "data/samples/raw_mime/6e8c601c-2771-56e2-be1b-361ffc64a9b9.eml",
+  "raw_mime_sha256": "sha256:6f58fdb4a78050046838055bc6bd9de041a69d5b5b4c656f0bd59ac7a4176bf1",
+  "from_email": "kanzlei@example.legal",
+  "from_display_name": null,
+  "reply_to_email": null,
+  "to_emails": [
+    "service@example.insure"
+  ],
+  "cc_emails": [],
+  "subject": "Fristsetzung durch Anwalt",
+  "subject_c14n": "fristsetzung durch anwalt",
+  "body_text": "Sehr geehrte Damen und Herren, anbei erhalten Sie ein Schreiben unseres Mandanten. Wir setzen eine Frist bis 2026-01-22.",
+  "body_text_c14n": "sehr geehrte damen und herren, anbei erhalten sie ein schreiben unseres mandanten. wir setzen eine frist bis 2026-01-22.",
+  "language": "de",
+  "thread_keys": {
+    "internet_message_id": null,
+    "in_reply_to": null,
+    "conversation_id": null
+  },
+  "attachment_ids": [
+    "3e5c026c-6103-5a1b-a415-0e50419f8f15"
+  ],
+  "message_fingerprint": "sha256:a7b7b1425a26d34574319183949e9a8a943b7615c748a50a32c08d1a9ce87b4b"
+}

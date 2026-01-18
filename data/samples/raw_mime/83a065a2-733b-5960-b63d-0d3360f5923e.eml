@@ -1,0 +1,9 @@
+From: mailer-daemon@example.test
+To: service@example.insure
+Subject: Undelivered Mail Returned to Sender
+Date: 2026-01-17T07:55:09Z
+Message-ID: <83a065a2-733b-5960-b63d-0d3360f5923e@example.test>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+This is the mail system at host example.test. Your message could not be delivered. This is an automatically generated message.

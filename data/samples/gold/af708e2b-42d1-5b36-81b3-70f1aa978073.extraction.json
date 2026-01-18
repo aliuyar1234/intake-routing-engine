@@ -1,0 +1,39 @@
+{
+  "created_at": "2026-01-17T08:00:06Z",
+  "entities": [
+    {
+      "confidence": 0.95,
+      "entity_type": "ENT_POLICY_NUMBER",
+      "provenance": {
+        "end": 114,
+        "snippet_redacted": "77-7654321",
+        "snippet_sha256": "sha256:8e55d47f78f2b70dcaf0e4f2af8495eb26152290cf7ac89e3380f2218f96de37",
+        "source": "BODY_C14N",
+        "start": 104
+      },
+      "store_mode": "FULL",
+      "value": "77-7654321",
+      "value_redacted": "77-7654321",
+      "value_sha256": "sha256:8e55d47f78f2b70dcaf0e4f2af8495eb26152290cf7ac89e3380f2218f96de37"
+    },
+    {
+      "confidence": 0.85,
+      "entity_type": "ENT_IBAN",
+      "provenance": {
+        "end": 91,
+        "snippet_redacted": "de02123456780000000000",
+        "snippet_sha256": "sha256:a469ca47b9f429ee8f05be9537fcbb8151eb0225f09d6f47ca9b492a32a1d638",
+        "source": "BODY_C14N",
+        "start": 69
+      },
+      "store_mode": "HASH_ONLY",
+      "value": null,
+      "value_redacted": "de02…0000",
+      "value_sha256": "sha256:f00d681664d820a15d878b5c450cc6c645cade7fa1012eeb9416e403ba2d3f47"
+    }
+  ],
+  "message_id": "af708e2b-42d1-5b36-81b3-70f1aa978073",
+  "run_id": "8e41f141-3b87-514a-bd65-c1e361ecff14",
+  "schema_id": "urn:ieim:schema:extraction-result:1.0.0",
+  "schema_version": "1.0.0"
+}

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ieim:schema:routing-decision:1.0.0",
+  "title": "RoutingDecision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_id",
+    "schema_version",
+    "message_id",
+    "run_id",
+    "queue_id",
+    "sla_id",
+    "priority",
+    "actions",
+    "rule_id",
+    "rule_version",
+    "fail_closed",
+    "created_at",
+    "decision_hash"
+  ],
+  "properties": {
+    "schema_id": { "const": "urn:ieim:schema:routing-decision:1.0.0" },
+    "schema_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+
+    "message_id": { "type": "string", "minLength": 16 },
+    "run_id": { "type": "string", "minLength": 16 },
+
+    "queue_id": { "type": "string", "pattern": "^QUEUE_[A-Z0-9_]+$" },
+    "sla_id": { "type": "string", "pattern": "^SLA_[A-Z0-9_]+$" },
+    "priority": { "type": "integer", "minimum": 1, "maximum": 10 },
+
+    "actions": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[A-Z0-9_]+$" }
+    },
+
+    "rule_id": { "type": "string", "minLength": 3 },
+    "rule_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+
+    "fail_closed": { "type": "boolean" },
+    "fail_closed_reason": { "type": ["string", "null"], "maxLength": 500 },
+
+    "created_at": { "type": "string", "format": "date-time" },
+
+    "decision_hash": { "$ref": "#/$defs/sha256_ref" }
+  },
+  "$defs": {
+    "sha256_ref": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+  }
+}

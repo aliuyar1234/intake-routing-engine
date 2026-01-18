@@ -1,0 +1,78 @@
+{
+  "created_at": "2026-01-17T08:00:06Z",
+  "decision_hash": "sha256:722b1e7223470512da80902f56400e559218a722f96d0832c157e1fc43aeea89",
+  "intents": [
+    {
+      "confidence": 0.88,
+      "evidence": [
+        {
+          "end": 47,
+          "snippet_redacted": "rückzahlung",
+          "snippet_sha256": "sha256:eb4bacf0ccd348af8b16ed63dd9669c7c144c94a250381fedf50909531267f4b",
+          "source": "BODY_C14N",
+          "start": 36
+        }
+      ],
+      "label": "INTENT_BILLING_QUESTION"
+    }
+  ],
+  "message_id": "af708e2b-42d1-5b36-81b3-70f1aa978073",
+  "model_info": null,
+  "primary_intent": {
+    "confidence": 0.88,
+    "evidence": [
+      {
+        "end": 47,
+        "snippet_redacted": "rückzahlung",
+        "snippet_sha256": "sha256:eb4bacf0ccd348af8b16ed63dd9669c7c144c94a250381fedf50909531267f4b",
+        "source": "BODY_C14N",
+        "start": 36
+      }
+    ],
+    "label": "INTENT_BILLING_QUESTION"
+  },
+  "product_line": {
+    "confidence": 0.45,
+    "evidence": [
+      {
+        "end": 47,
+        "snippet_redacted": "rückzahlung",
+        "snippet_sha256": "sha256:eb4bacf0ccd348af8b16ed63dd9669c7c144c94a250381fedf50909531267f4b",
+        "source": "BODY_C14N",
+        "start": 36
+      }
+    ],
+    "label": "PROD_UNKNOWN"
+  },
+  "risk_flags": [
+    {
+      "confidence": 0.85,
+      "evidence": [
+        {
+          "end": 68,
+          "snippet_redacted": "iban",
+          "snippet_sha256": "sha256:d53cd2cae33d58c3e11990de51c36acf6ccf752ec6a6bbd14ef1cb0ecdbda299",
+          "source": "BODY_C14N",
+          "start": 64
+        }
+      ],
+      "label": "RISK_PRIVACY_SENSITIVE"
+    }
+  ],
+  "run_id": "8e41f141-3b87-514a-bd65-c1e361ecff14",
+  "schema_id": "urn:ieim:schema:classification-result:1.0.0",
+  "schema_version": "1.0.0",
+  "urgency": {
+    "confidence": 0.6,
+    "evidence": [
+      {
+        "end": 16,
+        "snippet_redacted": "bitte",
+        "snippet_sha256": "sha256:cca501495f4d40c2a3c570b1f6a372d1b4013c0ed01f6bead1eb64031692503c",
+        "source": "BODY_C14N",
+        "start": 11
+      }
+    ],
+    "label": "URG_NORMAL"
+  }
+}

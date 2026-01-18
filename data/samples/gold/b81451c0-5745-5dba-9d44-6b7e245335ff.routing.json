@@ -1,0 +1,19 @@
+{
+  "actions": [
+    "BLOCK_CASE_CREATE",
+    "ATTACH_ORIGINAL_EMAIL"
+  ],
+  "created_at": "2026-01-17T08:00:10Z",
+  "decision_hash": "sha256:04bfcc1ddcb875893922ecefe00d78fba54707c2a944c315432ab6b7719d4260",
+  "fail_closed": true,
+  "fail_closed_reason": "SECURITY_MALWARE",
+  "message_id": "b81451c0-5745-5dba-9d44-6b7e245335ff",
+  "priority": 1,
+  "queue_id": "QUEUE_SECURITY_REVIEW",
+  "rule_id": "ROUTE_SECURITY_MALWARE",
+  "rule_version": "1.4.1",
+  "run_id": "a1a18978-18ed-50a2-8909-e2e9cb6b78a6",
+  "schema_id": "urn:ieim:schema:routing-decision:1.0.0",
+  "schema_version": "1.0.0",
+  "sla_id": "SLA_1H"
+}

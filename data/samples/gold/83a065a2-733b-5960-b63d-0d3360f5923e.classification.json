@@ -1,0 +1,78 @@
+{
+  "created_at": "2026-01-17T08:00:09Z",
+  "decision_hash": "sha256:677525ea480304c82000bbc985367274576719c27c0706db09c94cd82531de5b",
+  "intents": [
+    {
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "end": 11,
+          "snippet_redacted": "undelivered",
+          "snippet_sha256": "sha256:414fd24ad12b79423884b761e012f73cde241b580da608768616242e2cf3d663",
+          "source": "SUBJECT_C14N",
+          "start": 0
+        }
+      ],
+      "label": "INTENT_TECHNICAL"
+    }
+  ],
+  "message_id": "83a065a2-733b-5960-b63d-0d3360f5923e",
+  "model_info": null,
+  "primary_intent": {
+    "confidence": 0.9,
+    "evidence": [
+      {
+        "end": 11,
+        "snippet_redacted": "undelivered",
+        "snippet_sha256": "sha256:414fd24ad12b79423884b761e012f73cde241b580da608768616242e2cf3d663",
+        "source": "SUBJECT_C14N",
+        "start": 0
+      }
+    ],
+    "label": "INTENT_TECHNICAL"
+  },
+  "product_line": {
+    "confidence": 0.4,
+    "evidence": [
+      {
+        "end": 20,
+        "snippet_redacted": "this is the mail sys",
+        "snippet_sha256": "sha256:1b4be0fcc32b4a18d0c91bc6d139b07cdbe253826c5e8fb0899bddf742d05525",
+        "source": "BODY_C14N",
+        "start": 0
+      }
+    ],
+    "label": "PROD_UNKNOWN"
+  },
+  "risk_flags": [
+    {
+      "confidence": 0.8,
+      "evidence": [
+        {
+          "end": 117,
+          "snippet_redacted": "automatically generated",
+          "snippet_sha256": "sha256:d794014ab3089a38c30d944eb71ec5eeefbd39888d6af773ae094cbb9ec3e1cc",
+          "source": "BODY_C14N",
+          "start": 94
+        }
+      ],
+      "label": "RISK_AUTOREPLY_LOOP"
+    }
+  ],
+  "run_id": "4259d70a-ff16-54a2-8532-18cb4c62b03f",
+  "schema_id": "urn:ieim:schema:classification-result:1.0.0",
+  "schema_version": "1.0.0",
+  "urgency": {
+    "confidence": 0.55,
+    "evidence": [
+      {
+        "end": 11,
+        "snippet_redacted": "undelivered",
+        "snippet_sha256": "sha256:414fd24ad12b79423884b761e012f73cde241b580da608768616242e2cf3d663",
+        "source": "SUBJECT_C14N",
+        "start": 0
+      }
+    ],
+    "label": "URG_NORMAL"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "schema_id": "urn:ieim:schema:normalized-message:1.0.0",
+  "schema_version": "1.0.0",
+  "message_id": "67205626-a488-5439-9e1f-7c9717ee5e3b",
+  "run_id": "28cc5831-a6b7-5ee3-9cb4-a47d97674179",
+  "ingested_at": "2026-01-17T08:00:03Z",
+  "received_at": "2026-01-17T07:55:03Z",
+  "ingestion_source": "M365_GRAPH",
+  "raw_mime_uri": "data/samples/raw_mime/67205626-a488-5439-9e1f-7c9717ee5e3b.eml",
+  "raw_mime_sha256": "sha256:f587ae7e17f092c920d9987da8566ea1ad94d9a35541ccb075c3c82afc85f54f",
+  "from_email": "person@example.test",
+  "from_display_name": null,
+  "reply_to_email": null,
+  "to_emails": [
+    "privacy@example.insure"
+  ],
+  "cc_emails": [],
+  "subject": "Auskunft nach DSGVO",
+  "subject_c14n": "auskunft nach dsgvo",
+  "body_text": "Ich ersuche um Auskunft nach DSGVO zu allen über mich gespeicherten Daten. Bitte um Rückmeldung.",
+  "body_text_c14n": "ich ersuche um auskunft nach dsgvo zu allen über mich gespeicherten daten. bitte um rückmeldung.",
+  "language": "de",
+  "thread_keys": {
+    "internet_message_id": null,
+    "in_reply_to": null,
+    "conversation_id": null
+  },
+  "attachment_ids": [],
+  "message_fingerprint": "sha256:8c6bc8872c4c8e36de8e24e283d3b1569d24b2832c1cbb66c61d56bfd1a4ef62"
+}

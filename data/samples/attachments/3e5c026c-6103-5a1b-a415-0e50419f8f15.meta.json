@@ -1,0 +1,11 @@
+{
+  "attachment_id": "3e5c026c-6103-5a1b-a415-0e50419f8f15",
+  "filename": "anwaltsbrief.txt",
+  "mime_type": "text/plain",
+  "representation": "TEXT_ONLY",
+  "sha256": "sha256:1933645a4043178ea9e5002f4752bb86f28901e52131c5627cca6945a449242b",
+  "size_bytes": 114,
+  "source": "SYNTHETIC_TEST_DATA",
+  "av_status": "CLEAN",
+  "extracted_text_file": "data/samples/attachments/3e5c026c-6103-5a1b-a415-0e50419f8f15.txt"
+}

@@ -1,0 +1,31 @@
+{
+  "schema_id": "urn:ieim:schema:attachment-artifact:1.0.0",
+  "schema_version": "1.0.0",
+  "attachment_id": "3e5c026c-6103-5a1b-a415-0e50419f8f15",
+  "message_id": "6e8c601c-2771-56e2-be1b-361ffc64a9b9",
+  "filename": "anwaltsbrief.txt",
+  "mime_type": "text/plain",
+  "size_bytes": 114,
+  "sha256": "sha256:1933645a4043178ea9e5002f4752bb86f28901e52131c5627cca6945a449242b",
+  "av_status": "CLEAN",
+  "extracted_text_uri": "data/samples/attachments/3e5c026c-6103-5a1b-a415-0e50419f8f15.txt",
+  "extracted_text_sha256": "sha256:1933645a4043178ea9e5002f4752bb86f28901e52131c5627cca6945a449242b",
+  "ocr_applied": false,
+  "ocr_confidence": null,
+  "doc_type_candidates": [
+    {
+      "doc_type_label": "DOC_OTHER",
+      "confidence": 0.6,
+      "evidence": [
+        {
+          "source": "ATTACHMENT_TEXT",
+          "start": 51,
+          "end": 71,
+          "snippet_redacted": "frist bis 2026-01-22",
+          "snippet_sha256": "sha256:cc533f012f325ab275c40020d9181a262537525debde609371b8ff9c0daf57af"
+        }
+      ]
+    }
+  ],
+  "created_at": "2026-01-17T08:00:00Z"
+}

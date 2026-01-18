@@ -1,0 +1,30 @@
+{
+  "schema_id": "urn:ieim:schema:normalized-message:1.0.0",
+  "schema_version": "1.0.0",
+  "message_id": "7fe5dd82-0527-5644-ac06-937c6f22562e",
+  "run_id": "109101f4-75aa-5383-9cc1-6424260a79a8",
+  "ingested_at": "2026-01-17T08:00:08Z",
+  "received_at": "2026-01-17T07:55:08Z",
+  "ingestion_source": "M365_GRAPH",
+  "raw_mime_uri": "data/samples/raw_mime/7fe5dd82-0527-5644-ac06-937c6f22562e.eml",
+  "raw_mime_sha256": "sha256:b5624aede1a58decee4ba581d5f21b646a1ad3c13cfe9202013d8ba89e1ce100",
+  "from_email": "cliente@example.test",
+  "from_display_name": null,
+  "reply_to_email": null,
+  "to_emails": [
+    "service@example.insure"
+  ],
+  "cc_emails": [],
+  "subject": "Consulta sobre poliza",
+  "subject_c14n": "consulta sobre poliza",
+  "body_text": "Hola, necesito informacion sobre mi poliza. Gracias.",
+  "body_text_c14n": "hola, necesito informacion sobre mi poliza. gracias.",
+  "language": "es",
+  "thread_keys": {
+    "internet_message_id": null,
+    "in_reply_to": null,
+    "conversation_id": null
+  },
+  "attachment_ids": [],
+  "message_fingerprint": "sha256:29c5b1db36e7bd4d71d29c9e8b30dc42467669e104dd92d0eda0ceb74d53b335"
+}

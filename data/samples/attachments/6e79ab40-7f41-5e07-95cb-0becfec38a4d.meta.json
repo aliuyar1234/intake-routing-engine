@@ -1,0 +1,11 @@
+{
+  "attachment_id": "6e79ab40-7f41-5e07-95cb-0becfec38a4d",
+  "filename": "fotobeschreibung.txt",
+  "mime_type": "text/plain",
+  "representation": "TEXT_ONLY",
+  "sha256": "sha256:508199ecf23af5ebf03aae29f4a02dca450ff0e42cbf8c606e7c67c2fd9d1912",
+  "size_bytes": 55,
+  "source": "SYNTHETIC_TEST_DATA",
+  "av_status": "CLEAN",
+  "extracted_text_file": "data/samples/attachments/6e79ab40-7f41-5e07-95cb-0becfec38a4d.txt"
+}

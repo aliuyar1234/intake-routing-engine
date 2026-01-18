@@ -1,0 +1,32 @@
+{
+  "schema_id": "urn:ieim:schema:normalized-message:1.0.0",
+  "schema_version": "1.0.0",
+  "message_id": "b81451c0-5745-5dba-9d44-6b7e245335ff",
+  "run_id": "a1a18978-18ed-50a2-8909-e2e9cb6b78a6",
+  "ingested_at": "2026-01-17T08:00:10Z",
+  "received_at": "2026-01-17T07:55:10Z",
+  "ingestion_source": "M365_GRAPH",
+  "raw_mime_uri": "data/samples/raw_mime/b81451c0-5745-5dba-9d44-6b7e245335ff.eml",
+  "raw_mime_sha256": "sha256:006224e4cffb229a6178b40f15e476868d907b22d2c321ce4fe06a321d01ba42",
+  "from_email": "unknown@example.test",
+  "from_display_name": null,
+  "reply_to_email": null,
+  "to_emails": [
+    "service@example.insure"
+  ],
+  "cc_emails": [],
+  "subject": "Anbei Rechnung",
+  "subject_c14n": "anbei rechnung",
+  "body_text": "Guten Tag, anbei die Rechnung. Bitte prüfen.",
+  "body_text_c14n": "guten tag, anbei die rechnung. bitte prüfen.",
+  "language": "de",
+  "thread_keys": {
+    "internet_message_id": null,
+    "in_reply_to": null,
+    "conversation_id": null
+  },
+  "attachment_ids": [
+    "0c3eae85-c322-509b-879d-4bd24fc178b2"
+  ],
+  "message_fingerprint": "sha256:05a9885deaaca465a3966001914731e3c205205e91bc92f976f70955ddc4e599"
+}

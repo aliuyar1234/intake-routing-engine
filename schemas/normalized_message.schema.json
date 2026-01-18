@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ieim:schema:normalized-message:1.0.0",
+  "title": "NormalizedMessage",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_id",
+    "schema_version",
+    "message_id",
+    "run_id",
+    "ingested_at",
+    "received_at",
+    "ingestion_source",
+    "raw_mime_uri",
+    "raw_mime_sha256",
+    "from_email",
+    "to_emails",
+    "subject",
+    "subject_c14n",
+    "body_text",
+    "body_text_c14n",
+    "language",
+    "attachment_ids",
+    "message_fingerprint"
+  ],
+  "properties": {
+    "schema_id": { "const": "urn:ieim:schema:normalized-message:1.0.0" },
+    "schema_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+
+    "message_id": { "type": "string", "minLength": 16 },
+    "run_id": { "type": "string", "minLength": 16 },
+
+    "ingested_at": { "type": "string", "format": "date-time" },
+    "received_at": { "type": "string", "format": "date-time" },
+
+    "ingestion_source": { "type": "string", "pattern": "^[A-Z0-9_]+$" },
+
+    "raw_mime_uri": { "type": "string", "minLength": 3 },
+    "raw_mime_sha256": { "$ref": "#/$defs/sha256_ref" },
+
+    "from_email": { "$ref": "#/$defs/email" },
+    "from_display_name": { "type": ["string", "null"], "maxLength": 200 },
+    "reply_to_email": { "type": ["string", "null"], "maxLength": 320 },
+
+    "to_emails": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/email" }
+    },
+    "cc_emails": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/email" }
+    },
+
+    "subject": { "type": "string", "maxLength": 500 },
+    "subject_c14n": { "type": "string", "maxLength": 500 },
+
+    "body_text": { "type": "string" },
+    "body_text_c14n": { "type": "string" },
+
+    "language": { "type": "string", "pattern": "^[a-z]{2}(-[A-Z]{2})?$" },
+
+    "thread_keys": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [],
+      "properties": {
+        "internet_message_id": { "type": ["string", "null"], "maxLength": 400 },
+        "in_reply_to": { "type": ["string", "null"], "maxLength": 400 },
+        "conversation_id": { "type": ["string", "null"], "maxLength": 400 }
+      }
+    },
+
+    "attachment_ids": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 16 }
+    },
+
+    "message_fingerprint": { "$ref": "#/$defs/sha256_ref" }
+  },
+  "$defs": {
+    "sha256_ref": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "email": {
+      "type": "string",
+      "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$",
+      "maxLength": 320
+    }
+  }
+}

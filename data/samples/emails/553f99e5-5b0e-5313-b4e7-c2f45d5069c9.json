@@ -1,0 +1,32 @@
+{
+  "schema_id": "urn:ieim:schema:normalized-message:1.0.0",
+  "schema_version": "1.0.0",
+  "message_id": "553f99e5-5b0e-5313-b4e7-c2f45d5069c9",
+  "run_id": "fe517cff-01a3-561e-9e87-a30af23eacdd",
+  "ingested_at": "2026-01-17T08:00:11Z",
+  "received_at": "2026-01-17T07:55:11Z",
+  "ingestion_source": "M365_GRAPH",
+  "raw_mime_uri": "data/samples/raw_mime/553f99e5-5b0e-5313-b4e7-c2f45d5069c9.eml",
+  "raw_mime_sha256": "sha256:312e8d48951a31cd270cb3d7ee848efeca77b6f6d4dc01e8e10f054a8a4a68c8",
+  "from_email": "kunde.sturm@example.com",
+  "from_display_name": "Max Mustermann",
+  "reply_to_email": null,
+  "to_emails": [
+    "schaden@insure.example"
+  ],
+  "cc_emails": [],
+  "subject": "Sturmschaden am Dach — Polizzennr 99-0001112",
+  "subject_c14n": "sturmschaden am dach — polizzennr 99-0001112",
+  "body_text": "Guten Tag, Sturm hat am 2026-01-16 das Dach beschädigt. Polizzennr 99-0001112. Ort: Graz. Anbei eine Fotobeschreibung.",
+  "body_text_c14n": "guten tag, sturm hat am 2026-01-16 das dach beschädigt. polizzennr 99-0001112. ort: graz. anbei eine fotobeschreibung.",
+  "language": "de",
+  "thread_keys": {
+    "internet_message_id": "<553f99e5-5b0e-5313-b4e7-c2f45d5069c9@example.com>",
+    "in_reply_to": null,
+    "conversation_id": null
+  },
+  "attachment_ids": [
+    "6e79ab40-7f41-5e07-95cb-0becfec38a4d"
+  ],
+  "message_fingerprint": "sha256:ed0fa126bf2965b999326e005e14f86e0c7473df23ad0f9ac1a8fe1305bf06c6"
+}

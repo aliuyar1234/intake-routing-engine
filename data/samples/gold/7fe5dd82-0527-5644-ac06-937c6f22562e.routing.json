@@ -1,0 +1,19 @@
+{
+  "actions": [
+    "ATTACH_ORIGINAL_EMAIL",
+    "ATTACH_ALL_FILES"
+  ],
+  "created_at": "2026-01-17T08:00:08Z",
+  "decision_hash": "sha256:c644748abfbb40b135a6e597ba8fe64059941afa64279059479f31149b43c2c2",
+  "fail_closed": true,
+  "fail_closed_reason": "LANGUAGE_UNSUPPORTED",
+  "message_id": "7fe5dd82-0527-5644-ac06-937c6f22562e",
+  "priority": 2,
+  "queue_id": "QUEUE_INTAKE_REVIEW_GENERAL",
+  "rule_id": "ROUTE_LANGUAGE_UNSUPPORTED",
+  "rule_version": "1.4.1",
+  "run_id": "109101f4-75aa-5383-9cc1-6424260a79a8",
+  "schema_id": "urn:ieim:schema:routing-decision:1.0.0",
+  "schema_version": "1.0.0",
+  "sla_id": "SLA_1BD"
+}

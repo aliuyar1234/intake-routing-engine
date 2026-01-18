@@ -1,0 +1,78 @@
+{
+  "created_at": "2026-01-17T08:00:08Z",
+  "decision_hash": "sha256:0ec66f67ecb415e844c0ea6c9a5c854e41a9f4d1989f94156354da480b6a51d4",
+  "intents": [
+    {
+      "confidence": 0.55,
+      "evidence": [
+        {
+          "end": 26,
+          "snippet_redacted": "informacion",
+          "snippet_sha256": "sha256:09aabd71a36a96ac506267d0473f18a4dc95189eed85784baf1073c756ea8218",
+          "source": "BODY_C14N",
+          "start": 15
+        }
+      ],
+      "label": "INTENT_GENERAL_INQUIRY"
+    }
+  ],
+  "message_id": "7fe5dd82-0527-5644-ac06-937c6f22562e",
+  "model_info": null,
+  "primary_intent": {
+    "confidence": 0.55,
+    "evidence": [
+      {
+        "end": 26,
+        "snippet_redacted": "informacion",
+        "snippet_sha256": "sha256:09aabd71a36a96ac506267d0473f18a4dc95189eed85784baf1073c756ea8218",
+        "source": "BODY_C14N",
+        "start": 15
+      }
+    ],
+    "label": "INTENT_GENERAL_INQUIRY"
+  },
+  "product_line": {
+    "confidence": 0.4,
+    "evidence": [
+      {
+        "end": 20,
+        "snippet_redacted": "hola, necesito infor",
+        "snippet_sha256": "sha256:0c790a5e0622be6640b8ebaeae34e2de5ea3398ce7029bdab53e5d3d51c696ff",
+        "source": "BODY_C14N",
+        "start": 0
+      }
+    ],
+    "label": "PROD_UNKNOWN"
+  },
+  "risk_flags": [
+    {
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "end": 8,
+          "snippet_redacted": "consulta",
+          "snippet_sha256": "sha256:a2e363fb1596b372d664fa81bf5fbbeb1aaab6e358df85c7973cc5ffbbe82248",
+          "source": "SUBJECT_C14N",
+          "start": 0
+        }
+      ],
+      "label": "RISK_LANGUAGE_UNSUPPORTED"
+    }
+  ],
+  "run_id": "109101f4-75aa-5383-9cc1-6424260a79a8",
+  "schema_id": "urn:ieim:schema:classification-result:1.0.0",
+  "schema_version": "1.0.0",
+  "urgency": {
+    "confidence": 0.6,
+    "evidence": [
+      {
+        "end": 20,
+        "snippet_redacted": "consulta sobre poliz",
+        "snippet_sha256": "sha256:3afb27247c0c5ea30db85657aa9f5ab4cdff58940939f89253edede692fe71a2",
+        "source": "SUBJECT_C14N",
+        "start": 0
+      }
+    ],
+    "label": "URG_NORMAL"
+  }
+}

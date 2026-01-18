@@ -1,0 +1,64 @@
+{
+  "created_at": "2026-01-17T08:00:07Z",
+  "decision_hash": "sha256:2af410aece2c30c41b8c9edb2bec398c6354e295026d9bc61bc9de4eb457494f",
+  "intents": [
+    {
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "end": 10,
+          "snippet_redacted": "im auftrag",
+          "snippet_sha256": "sha256:dd07201638c4a3d55dce53948f46b48a30eea5ec60d8d6d609a45c5a225f9a4e",
+          "source": "SUBJECT_C14N",
+          "start": 0
+        }
+      ],
+      "label": "INTENT_BROKER_INTERMEDIARY"
+    }
+  ],
+  "message_id": "101f1b6d-ea7b-54b4-833d-53e11c190174",
+  "model_info": null,
+  "primary_intent": {
+    "confidence": 0.9,
+    "evidence": [
+      {
+        "end": 10,
+        "snippet_redacted": "im auftrag",
+        "snippet_sha256": "sha256:dd07201638c4a3d55dce53948f46b48a30eea5ec60d8d6d609a45c5a225f9a4e",
+        "source": "SUBJECT_C14N",
+        "start": 0
+      }
+    ],
+    "label": "INTENT_BROKER_INTERMEDIARY"
+  },
+  "product_line": {
+    "confidence": 0.4,
+    "evidence": [
+      {
+        "end": 20,
+        "snippet_redacted": "guten tag, wir schre",
+        "snippet_sha256": "sha256:c264f9284d6ee48f2e11700863d1050661e6f3d7b26f55bc65d2d3c010b59575",
+        "source": "BODY_C14N",
+        "start": 0
+      }
+    ],
+    "label": "PROD_UNKNOWN"
+  },
+  "risk_flags": [],
+  "run_id": "3b9d2692-3165-53cf-aeca-fa26ab75a4d9",
+  "schema_id": "urn:ieim:schema:classification-result:1.0.0",
+  "schema_version": "1.0.0",
+  "urgency": {
+    "confidence": 0.55,
+    "evidence": [
+      {
+        "end": 57,
+        "snippet_redacted": "bitte",
+        "snippet_sha256": "sha256:cca501495f4d40c2a3c570b1f6a372d1b4013c0ed01f6bead1eb64031692503c",
+        "source": "BODY_C14N",
+        "start": 52
+      }
+    ],
+    "label": "URG_NORMAL"
+  }
+}

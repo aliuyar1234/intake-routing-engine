@@ -1,0 +1,407 @@
+{
+  "ruleset_id": "routing_rules_v1.4.1",
+  "ruleset_version": "1.4.1",
+  "description": "Deterministic routing ruleset for IEIM. Evaluation is first-match by descending priority.",
+  "rules": [
+    {
+      "rule_id": "ROUTE_SECURITY_MALWARE",
+      "priority": 1000,
+      "when": {
+        "risk_flags_any": [
+          "RISK_SECURITY_MALWARE"
+        ]
+      },
+      "then": {
+        "queue_id": "QUEUE_SECURITY_REVIEW",
+        "sla_id": "SLA_1H",
+        "priority": 1,
+        "actions": [
+          "BLOCK_CASE_CREATE",
+          "ATTACH_ORIGINAL_EMAIL"
+        ],
+        "fail_closed": true,
+        "fail_closed_reason": "SECURITY_MALWARE"
+      }
+    },
+    {
+      "rule_id": "ROUTE_GDPR_REQUEST",
+      "priority": 950,
+      "when": {
+        "primary_intent_in": [
+          "INTENT_GDPR_REQUEST"
+        ]
+      },
+      "then": {
+        "queue_id": "QUEUE_PRIVACY_DSR",
+        "sla_id": "SLA_1H",
+        "priority": 1,
+        "actions": [
+          "CREATE_CASE",
+          "ATTACH_ORIGINAL_EMAIL"
+        ],
+        "fail_closed": false,
+        "fail_closed_reason": null
+      }
+    },
+    {
+      "rule_id": "ROUTE_LEGAL",
+      "priority": 940,
+      "when": {
+        "any": [
+          {
+            "primary_intent_in": [
+              "INTENT_LEGAL"
+            ]
+          },
+          {
+            "risk_flags_any": [
+              "RISK_LEGAL_THREAT"
+            ]
+          }
+        ]
+      },
+      "then": {
+        "queue_id": "QUEUE_LEGAL",
+        "sla_id": "SLA_1H",
+        "priority": 1,
+        "actions": [
+          "CREATE_CASE",
+          "ATTACH_ORIGINAL_EMAIL",
+          "ATTACH_ALL_FILES"
+        ],
+        "fail_closed": false,
+        "fail_closed_reason": null
+      }
+    },
+    {
+      "rule_id": "ROUTE_REGULATORY_OR_COMPLAINT",
+      "priority": 930,
+      "when": {
+        "any": [
+          {
+            "primary_intent_in": [
+              "INTENT_COMPLAINT"
+            ]
+          },
+          {
+            "risk_flags_any": [
+              "RISK_REGULATORY"
+            ]
+          }
+        ]
+      },
+      "then": {
+        "queue_id": "QUEUE_COMPLAINTS",
+        "sla_id": "SLA_1H",
+        "priority": 1,
+        "actions": [
+          "CREATE_CASE",
+          "ATTACH_ORIGINAL_EMAIL"
+        ],
+        "fail_closed": false,
+        "fail_closed_reason": null
+      }
+    },
+    {
+      "rule_id": "ROUTE_FRAUD",
+      "priority": 920,
+      "when": {
+        "risk_flags_any": [
+          "RISK_FRAUD_SIGNAL"
+        ]
+      },
+      "then": {
+        "queue_id": "QUEUE_FRAUD",
+        "sla_id": "SLA_4H",
+        "priority": 1,
+        "actions": [
+          "CREATE_CASE",
+          "ATTACH_ORIGINAL_EMAIL",
+          "ATTACH_ALL_FILES"
+        ],
+        "fail_closed": false,
+        "fail_closed_reason": null
+      }
+    },
+    {
+      "rule_id": "ROUTE_LANGUAGE_UNSUPPORTED",
+      "priority": 910,
+      "when": {
+        "risk_flags_any": [
+          "RISK_LANGUAGE_UNSUPPORTED"
+        ]
+      },
+      "then": {
+        "queue_id": "QUEUE_INTAKE_REVIEW_GENERAL",
+        "sla_id": "SLA_1BD",
+        "priority": 2,
+        "actions": [
+          "ATTACH_ORIGINAL_EMAIL",
+          "ATTACH_ALL_FILES"
+        ],
+        "fail_closed": true,
+        "fail_closed_reason": "LANGUAGE_UNSUPPORTED"
+      }
+    },
+    {
+      "rule_id": "ROUTE_TECHNICAL",
+      "priority": 900,
+      "when": {
+        "primary_intent_in": [
+          "INTENT_TECHNICAL"
+        ]
+      },
+      "then": {
+        "queue_id": "QUEUE_TECH_SUPPORT",
+        "sla_id": "SLA_1BD",
+        "priority": 3,
+        "actions": [
+          "CREATE_CASE",
+          "ATTACH_ORIGINAL_EMAIL"
+        ],
+        "fail_closed": false,
+        "fail_closed_reason": null
+      }
+    },
+    {
+      "rule_id": "ROUTE_BROKER_INTERMEDIARY",
+      "priority": 850,
+      "when": {
+        "primary_intent_in": [
+          "INTENT_BROKER_INTERMEDIARY"
+        ]
+      },
+      "then": {
+        "queue_id": "QUEUE_BROKER_SUPPORT",
+        "sla_id": "SLA_1BD",
+        "priority": 3,
+        "actions": [
+          "CREATE_CASE",
+          "ATTACH_ORIGINAL_EMAIL"
+        ],
+        "fail_closed": false,
+        "fail_closed_reason": null
+      }
+    },
+    {
+      "rule_id": "ROUTE_IDENTITY_UNCERTAIN_REVIEW",
+      "priority": 800,
+      "when": {
+        "all": [
+          {
+            "identity_status_in": [
+              "IDENTITY_NEEDS_REVIEW",
+              "IDENTITY_NO_CANDIDATE"
+            ]
+          },
+          {
+            "primary_intent_not_in": [
+              "INTENT_GDPR_REQUEST",
+              "INTENT_LEGAL",
+              "INTENT_COMPLAINT"
+            ]
+          },
+          {
+            "risk_flags_not_any": [
+              "RISK_SECURITY_MALWARE",
+              "RISK_REGULATORY",
+              "RISK_LEGAL_THREAT",
+              "RISK_FRAUD_SIGNAL"
+            ]
+          }
+        ]
+      },
+      "then": {
+        "queue_id": "QUEUE_IDENTITY_REVIEW",
+        "sla_id": "SLA_1BD",
+        "priority": 2,
+        "actions": [
+          "ADD_REQUEST_INFO_DRAFT",
+          "ATTACH_ORIGINAL_EMAIL",
+          "ATTACH_ALL_FILES"
+        ],
+        "fail_closed": true,
+        "fail_closed_reason": "REASON_IDENTITY_UNCERTAIN"
+      }
+    },
+    {
+      "rule_id": "ROUTE_CLAIMS_AUTO",
+      "priority": 700,
+      "when": {
+        "all": [
+          {
+            "primary_intent_in": [
+              "INTENT_CLAIM_NEW",
+              "INTENT_CLAIM_UPDATE"
+            ]
+          },
+          {
+            "product_line_in": [
+              "PROD_AUTO"
+            ]
+          }
+        ]
+      },
+      "then": {
+        "queue_id": "QUEUE_CLAIMS_AUTO",
+        "sla_id": "SLA_1BD",
+        "priority": 3,
+        "actions": [
+          "CREATE_CASE",
+          "ATTACH_ORIGINAL_EMAIL",
+          "ATTACH_ALL_FILES"
+        ],
+        "fail_closed": false,
+        "fail_closed_reason": null
+      }
+    },
+    {
+      "rule_id": "ROUTE_CLAIMS_PROPERTY",
+      "priority": 680,
+      "when": {
+        "all": [
+          {
+            "primary_intent_in": [
+              "INTENT_CLAIM_NEW",
+              "INTENT_CLAIM_UPDATE"
+            ]
+          },
+          {
+            "product_line_in": [
+              "PROD_PROPERTY",
+              "PROD_HOME"
+            ]
+          }
+        ]
+      },
+      "then": {
+        "queue_id": "QUEUE_CLAIMS_PROPERTY",
+        "sla_id": "SLA_1BD",
+        "priority": 3,
+        "actions": [
+          "CREATE_CASE",
+          "ATTACH_ORIGINAL_EMAIL",
+          "ATTACH_ALL_FILES"
+        ],
+        "fail_closed": false,
+        "fail_closed_reason": null
+      }
+    },
+    {
+      "rule_id": "ROUTE_CLAIMS_LIABILITY",
+      "priority": 660,
+      "when": {
+        "all": [
+          {
+            "primary_intent_in": [
+              "INTENT_CLAIM_NEW",
+              "INTENT_CLAIM_UPDATE"
+            ]
+          },
+          {
+            "product_line_in": [
+              "PROD_LIABILITY"
+            ]
+          }
+        ]
+      },
+      "then": {
+        "queue_id": "QUEUE_CLAIMS_LIABILITY",
+        "sla_id": "SLA_1BD",
+        "priority": 3,
+        "actions": [
+          "CREATE_CASE",
+          "ATTACH_ORIGINAL_EMAIL",
+          "ATTACH_ALL_FILES"
+        ],
+        "fail_closed": false,
+        "fail_closed_reason": null
+      }
+    },
+    {
+      "rule_id": "ROUTE_POLICY_SERVICE",
+      "priority": 620,
+      "when": {
+        "primary_intent_in": [
+          "INTENT_POLICY_CHANGE",
+          "INTENT_POLICY_CANCELLATION",
+          "INTENT_COVERAGE_QUESTION"
+        ]
+      },
+      "then": {
+        "queue_id": "QUEUE_POLICY_SERVICE",
+        "sla_id": "SLA_3BD",
+        "priority": 4,
+        "actions": [
+          "CREATE_CASE",
+          "ATTACH_ORIGINAL_EMAIL"
+        ],
+        "fail_closed": false,
+        "fail_closed_reason": null
+      }
+    },
+    {
+      "rule_id": "ROUTE_BILLING",
+      "priority": 610,
+      "when": {
+        "primary_intent_in": [
+          "INTENT_BILLING_QUESTION"
+        ]
+      },
+      "then": {
+        "queue_id": "QUEUE_BILLING",
+        "sla_id": "SLA_3BD",
+        "priority": 4,
+        "actions": [
+          "CREATE_CASE",
+          "ATTACH_ORIGINAL_EMAIL"
+        ],
+        "fail_closed": false,
+        "fail_closed_reason": null
+      }
+    },
+    {
+      "rule_id": "ROUTE_PRODUCT_UNKNOWN_REVIEW",
+      "priority": 100,
+      "when": {
+        "all": [
+          {
+            "product_line_in": [
+              "PROD_UNKNOWN"
+            ]
+          },
+          {
+            "primary_intent_not_in": [
+              "INTENT_GDPR_REQUEST",
+              "INTENT_LEGAL",
+              "INTENT_COMPLAINT",
+              "INTENT_TECHNICAL"
+            ]
+          }
+        ]
+      },
+      "then": {
+        "queue_id": "QUEUE_UNKNOWN_PRODUCT_REVIEW",
+        "sla_id": "SLA_1BD",
+        "priority": 2,
+        "actions": [
+          "ADD_REQUEST_INFO_DRAFT",
+          "ATTACH_ORIGINAL_EMAIL"
+        ],
+        "fail_closed": true,
+        "fail_closed_reason": "PRODUCT_UNKNOWN"
+      }
+    }
+  ],
+  "fallback": {
+    "queue_id": "QUEUE_INTAKE_REVIEW_GENERAL",
+    "sla_id": "SLA_1BD",
+    "priority": 5,
+    "actions": [
+      "ATTACH_ORIGINAL_EMAIL"
+    ],
+    "fail_closed": true,
+    "fail_closed_reason": "NO_RULE_MATCH"
+  }
+}
+

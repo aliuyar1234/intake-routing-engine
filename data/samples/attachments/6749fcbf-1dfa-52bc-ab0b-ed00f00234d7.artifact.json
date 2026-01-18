@@ -1,0 +1,31 @@
+{
+  "schema_id": "urn:ieim:schema:attachment-artifact:1.0.0",
+  "schema_version": "1.0.0",
+  "attachment_id": "6749fcbf-1dfa-52bc-ab0b-ed00f00234d7",
+  "message_id": "a3e96afd-bd77-5b03-8cf0-64ac1ec17786",
+  "filename": "unfallbericht.txt",
+  "mime_type": "text/plain",
+  "size_bytes": 116,
+  "sha256": "sha256:5fc9931e64974dd62c8adc1dd168261e7cae2ebc364ea3efbaf2b21a1ffe6ae4",
+  "av_status": "CLEAN",
+  "extracted_text_uri": "data/samples/attachments/6749fcbf-1dfa-52bc-ab0b-ed00f00234d7.txt",
+  "extracted_text_sha256": "sha256:5fc9931e64974dd62c8adc1dd168261e7cae2ebc364ea3efbaf2b21a1ffe6ae4",
+  "ocr_applied": false,
+  "ocr_confidence": null,
+  "doc_type_candidates": [
+    {
+      "doc_type_label": "DOC_CLAIM_FORM",
+      "confidence": 0.85,
+      "evidence": [
+        {
+          "source": "ATTACHMENT_TEXT",
+          "start": 14,
+          "end": 36,
+          "snippet_redacted": "polizzennr: 45-1234567",
+          "snippet_sha256": "sha256:90db73be3935117168becea51f0467a70b5edb65df1087f5022177c6e72ddd1c"
+        }
+      ]
+    }
+  ],
+  "created_at": "2026-01-17T08:00:00Z"
+}

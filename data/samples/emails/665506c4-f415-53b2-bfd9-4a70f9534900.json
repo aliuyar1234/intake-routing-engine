@@ -1,0 +1,30 @@
+{
+  "schema_id": "urn:ieim:schema:normalized-message:1.0.0",
+  "schema_version": "1.0.0",
+  "message_id": "665506c4-f415-53b2-bfd9-4a70f9534900",
+  "run_id": "0ea43aa6-c5bf-5746-9ef0-46404e99ee5d",
+  "ingested_at": "2026-01-17T08:00:04Z",
+  "received_at": "2026-01-17T07:55:04Z",
+  "ingestion_source": "M365_GRAPH",
+  "raw_mime_uri": "data/samples/raw_mime/665506c4-f415-53b2-bfd9-4a70f9534900.eml",
+  "raw_mime_sha256": "sha256:e319f27ccf13c3b6dc4825841ea83fc43d5b74ee3425c719d429ab11d2ac7170",
+  "from_email": "kunde3@example.test",
+  "from_display_name": null,
+  "reply_to_email": null,
+  "to_emails": [
+    "service@example.insure"
+  ],
+  "cc_emails": [],
+  "subject": "Beschwerde und Ombudsmann",
+  "subject_c14n": "beschwerde und ombudsmann",
+  "body_text": "Ich erhebe Beschwerde über die Bearbeitung. Wenn das nicht sofort geklärt wird, wende ich mich an den Ombudsmann.",
+  "body_text_c14n": "ich erhebe beschwerde über die bearbeitung. wenn das nicht sofort geklärt wird, wende ich mich an den ombudsmann.",
+  "language": "de",
+  "thread_keys": {
+    "internet_message_id": null,
+    "in_reply_to": null,
+    "conversation_id": null
+  },
+  "attachment_ids": [],
+  "message_fingerprint": "sha256:acf46d4e23ac1cf9cb8de4a6df238fe6d8e5a320355b8d3d536dcc5783e7d232"
+}

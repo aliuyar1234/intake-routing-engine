@@ -1,0 +1,119 @@
+# Phase plan
+
+This plan is the implementation sequence for IEIM. It is designed for a phase-by-phase delivery with strict quality gates.
+
+The traceability mapping is in `TRACEABILITY.md`.
+
+## P0 - Foundations and SSOT enforcement
+
+**Objective:** Create repository structure, schemas, and pack verification.
+
+Tasks:
+- T-001 Create repository layout (spec/, schemas/, configs/, prompts/, interfaces/, scripts/, tests/, runbooks/, tech/, data/samples) (DONE)
+- T-002 Implement JSON Schemas as the stable contracts (DONE)
+- T-003 Implement pack verification scripts and CI pipeline integration (DONE)
+- T-004 Enforce Single Definition Rule and forbidden-token scanning (DONE)
+
+Exit criteria (Gate G-001) (PASSED):
+- All schemas validate
+- `bash scripts/verify_pack.sh` passes on the pack
+
+## P1 - Ingestion, raw store, normalization
+
+Tasks:
+- T-005 Implement M365 Graph ingestion adapter and cursor management (DONE)
+- T-006 Implement IMAP adapter (DONE)
+- T-007 Implement SMTP gateway ingest endpoint (DONE)
+- T-008 Implement raw store append-only writes with SHA-256 hashing (DONE)
+- T-009 Implement MIME parsing and normalization to `NormalizedMessage` (DONE)
+- T-010 Implement idempotency keys and deduplication (DONE)
+
+Gate G-002 (PASSED):
+- End-to-end ingest -> raw store -> normalize on the sample corpus
+- Duplicate emails do not create duplicate outputs
+
+## P2 - Attachment processing
+
+Tasks:
+- T-011 Store attachments and compute hashes (DONE)
+- T-012 AV scan integration and enforcement (DONE)
+- T-013 File type detection (DONE)
+- T-014 Text extraction for supported formats (DONE)
+- T-015 OCR pipeline for scanned documents (DONE)
+- T-016 Derived text artifact storage (DONE)
+
+Gate G-003 (PASSED):
+- AV blocks infected attachments and fails closed
+- OCR outputs are persisted with confidence metrics
+
+## P3 - Identity resolution
+
+Tasks:
+- T-017 Candidate retrieval via CRM/Policy/Claims adapters (DONE)
+- T-018 Deterministic scoring and Top-K ranking (DONE)
+- T-019 Broker/shared mailbox heuristics (DONE)
+- T-020 Request-info draft generation for unresolved identity (DONE)
+
+Gate G-004 (PASSED):
+- Identity results match gold expectations for the sample corpus
+- Ambiguous cases route to review
+
+## P4 - Classification and extraction
+
+Tasks:
+- T-021 Rules engine for high precision classification (DONE)
+- T-022 Lightweight deterministic model integration (DONE)
+- T-023 LLM adapter integration (optional, gated, with cost guardrails and caching) (DONE)
+- T-024 Disagreement gate implementation (DONE)
+- T-025 Entity extraction and validation (DONE)
+- T-026 Optional IBAN extraction under policy (DONE)
+
+Gate G-005 (PASSED):
+- Classification and extraction results match gold expectations for the sample corpus
+- Invalid outputs fail closed to review
+
+## P5 - Routing engine and case adapter
+
+Tasks:
+- T-027 Implement deterministic routing evaluation against the routing table (DONE)
+- T-028 Implement routing rules lint and simulation CLI (DONE)
+- T-029 Implement case adapter stub and idempotent create/update (including support for request-info and reply drafts as approved artifacts) (DONE)
+- T-030 Implement failure handling and review queues (DONE)
+
+Gate G-006 (PASSED):
+- Routing decisions match gold expectations
+- Case adapter operations are idempotent
+
+## P6 - Audit integrity and observability
+
+Tasks:
+- T-031 Implement audit logger and hash chain (DONE)
+- T-032 Implement decision_hash computation (DONE)
+- T-033 Implement audit verify job and deterministic reprocess command (`ieimctl reprocess`) (DONE)
+- T-034 Implement metrics, logs, traces, and dashboards (DONE)
+
+Gate G-007 (PASSED):
+- Audit chain verification passes
+- Observability signals exist for all stages
+
+## P7 - HITL and governance
+
+Tasks:
+- T-035 Implement review UI/API requirements (DONE)
+- T-036 Implement correction record storage and audit linkage (DONE)
+- T-037 Implement offline promotion workflow for rules/models (DONE)
+
+Gate G-008 (PASSED):
+- HITL corrections are fully auditable
+- No auto-learning in production
+
+## P8 - Production hardening and rollout
+
+Tasks:
+- T-038 Implement deployment automation and runbooks (including RBAC configuration, key management integration, and retention jobs) (DONE)
+- T-039 Implement incident toggles (force review, disable LLM) (DONE)
+- T-040 Load testing and scaling validation (DONE)
+
+Gate G-009 (PASSED):
+- Release checklist in `QUALITY_GATES.md` is satisfied
+- All quality gates pass in CI

@@ -1,0 +1,9 @@
+From: broker@example.broker
+To: service@example.insure
+Subject: Im Auftrag unseres Kunden: Anfrage
+Date: 2026-01-17T07:55:07Z
+Message-ID: <101f1b6d-ea7b-54b4-833d-53e11c190174@example.test>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Guten Tag, wir schreiben im Auftrag unseres Kunden. Bitte um Rückruf. Es liegen derzeit keine Nummern vor.

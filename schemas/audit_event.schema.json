@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ieim:schema:audit-event:1.0.0",
+  "title": "AuditEvent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_id",
+    "schema_version",
+    "audit_event_id",
+    "message_id",
+    "run_id",
+    "stage",
+    "actor_type",
+    "created_at",
+    "input_ref",
+    "output_ref",
+    "prev_event_hash",
+    "event_hash"
+  ],
+  "properties": {
+    "schema_id": { "const": "urn:ieim:schema:audit-event:1.0.0" },
+    "schema_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+
+    "audit_event_id": { "type": "string", "minLength": 16 },
+    "message_id": { "type": "string", "minLength": 16 },
+    "run_id": { "type": "string", "minLength": 16 },
+
+    "stage": { "type": "string", "pattern": "^[A-Z0-9_]+$" },
+
+    "actor_type": { "type": "string", "pattern": "^[A-Z0-9_]+$" },
+    "actor_id": { "type": ["string", "null"], "maxLength": 200 },
+
+    "created_at": { "type": "string", "format": "date-time" },
+
+    "input_ref": { "$ref": "#/$defs/artifact_ref" },
+    "output_ref": { "$ref": "#/$defs/artifact_ref" },
+
+    "config_ref": { "type": ["object", "null"], "additionalProperties": false,
+      "required": ["config_path", "config_sha256"],
+      "properties": {
+        "config_path": { "type": "string" },
+        "config_sha256": { "$ref": "#/$defs/sha256_ref" }
+      }
+    },
+
+    "rules_ref": { "type": ["object", "null"], "additionalProperties": false,
+      "required": ["ruleset_path", "ruleset_sha256", "ruleset_version"],
+      "properties": {
+        "ruleset_path": { "type": "string" },
+        "ruleset_sha256": { "$ref": "#/$defs/sha256_ref" },
+        "ruleset_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" }
+      }
+    },
+
+    "model_info": { "type": ["object", "null"], "additionalProperties": false,
+      "required": ["provider", "model_name", "model_version", "prompt_version", "prompt_sha256"],
+      "properties": {
+        "provider": { "type": "string", "maxLength": 80 },
+        "model_name": { "type": "string", "maxLength": 120 },
+        "model_version": { "type": "string", "maxLength": 200 },
+        "prompt_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "prompt_sha256": { "$ref": "#/$defs/sha256_ref" },
+        "temperature": { "type": ["number", "null"], "minimum": 0.0, "maximum": 2.0 },
+        "max_tokens": { "type": ["integer", "null"], "minimum": 0 }
+      }
+    },
+
+    "evidence": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/evidence_span" }
+    },
+
+    "decision_hash": { "type": ["string", "null"], "pattern": "^(sha256:[0-9a-f]{64})?$" },
+
+    "prev_event_hash": { "type": ["string", "null"], "pattern": "^(sha256:[0-9a-f]{64})?$" },
+    "event_hash": { "$ref": "#/$defs/sha256_ref" }
+  },
+  "$defs": {
+    "sha256_ref": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "artifact_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_id", "uri", "sha256"],
+      "properties": {
+        "schema_id": { "type": "string", "maxLength": 200 },
+        "uri": { "type": "string" },
+        "sha256": { "$ref": "#/$defs/sha256_ref" }
+      }
+    },
+    "evidence_span": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "start", "end", "snippet_redacted", "snippet_sha256"],
+      "properties": {
+        "source": { "type": "string", "pattern": "^[A-Z0-9_]+$" },
+        "start": { "type": "integer", "minimum": 0 },
+        "end": { "type": "integer", "minimum": 0 },
+        "snippet_redacted": { "type": "string", "maxLength": 400 },
+        "snippet_sha256": { "$ref": "#/$defs/sha256_ref" }
+      }
+    }
+  }
+}

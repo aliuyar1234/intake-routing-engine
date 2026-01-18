@@ -1,0 +1,5 @@
+Unfallbericht
+Polizzennr: 45-1234567
+Datum: 2026-01-15
+Ort: Wien
+Beschreibung: Auffahrunfall bei langsamem Verkehr.

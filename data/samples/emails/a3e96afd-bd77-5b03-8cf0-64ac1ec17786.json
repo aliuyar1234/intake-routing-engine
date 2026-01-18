@@ -1,0 +1,32 @@
+{
+  "schema_id": "urn:ieim:schema:normalized-message:1.0.0",
+  "schema_version": "1.0.0",
+  "message_id": "a3e96afd-bd77-5b03-8cf0-64ac1ec17786",
+  "run_id": "6ecebf6f-0e75-5f81-9932-b67e3df813a6",
+  "ingested_at": "2026-01-17T08:00:01Z",
+  "received_at": "2026-01-17T07:55:01Z",
+  "ingestion_source": "M365_GRAPH",
+  "raw_mime_uri": "data/samples/raw_mime/a3e96afd-bd77-5b03-8cf0-64ac1ec17786.eml",
+  "raw_mime_sha256": "sha256:a517f23384b0b5f4b7007fe97571730aa35dbdf831c5f43bd069cd6a6aee773a",
+  "from_email": "kunde1@example.test",
+  "from_display_name": null,
+  "reply_to_email": null,
+  "to_emails": [
+    "service@example.insure"
+  ],
+  "cc_emails": [],
+  "subject": "Schadenmeldung nach Auffahrunfall",
+  "subject_c14n": "schadenmeldung nach auffahrunfall",
+  "body_text": "Guten Tag, ich möchte einen Schaden melden. Polizzennr 45-1234567. Unfall am 2026-01-15 in Wien. Anbei der Unfallbericht.",
+  "body_text_c14n": "guten tag, ich möchte einen schaden melden. polizzennr 45-1234567. unfall am 2026-01-15 in wien. anbei der unfallbericht.",
+  "language": "de",
+  "thread_keys": {
+    "internet_message_id": null,
+    "in_reply_to": null,
+    "conversation_id": null
+  },
+  "attachment_ids": [
+    "6749fcbf-1dfa-52bc-ab0b-ed00f00234d7"
+  ],
+  "message_fingerprint": "sha256:61b0ab3edf78e34f5a5e9b29ae864a3782a66b8cd6510b10e9cdc63520928267"
+}

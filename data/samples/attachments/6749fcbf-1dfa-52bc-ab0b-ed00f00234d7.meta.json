@@ -1,0 +1,11 @@
+{
+  "attachment_id": "6749fcbf-1dfa-52bc-ab0b-ed00f00234d7",
+  "filename": "unfallbericht.txt",
+  "mime_type": "text/plain",
+  "representation": "TEXT_ONLY",
+  "sha256": "sha256:5fc9931e64974dd62c8adc1dd168261e7cae2ebc364ea3efbaf2b21a1ffe6ae4",
+  "size_bytes": 116,
+  "source": "SYNTHETIC_TEST_DATA",
+  "av_status": "CLEAN",
+  "extracted_text_file": "data/samples/attachments/6749fcbf-1dfa-52bc-ab0b-ed00f00234d7.txt"
+}

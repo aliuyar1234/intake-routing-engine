@@ -1,0 +1,11 @@
+{
+  "attachment_id": "0808e0a2-1dc0-57e0-9689-bba16bd6b606",
+  "filename": "sepa_hinweis.txt",
+  "mime_type": "text/plain",
+  "representation": "TEXT_ONLY",
+  "sha256": "sha256:349e491f038165fa80d2babadecc9fda9f35088cb0165c770153c71fa72e41af",
+  "size_bytes": 77,
+  "source": "SYNTHETIC_TEST_DATA",
+  "av_status": "CLEAN",
+  "extracted_text_file": "data/samples/attachments/0808e0a2-1dc0-57e0-9689-bba16bd6b606.txt"
+}

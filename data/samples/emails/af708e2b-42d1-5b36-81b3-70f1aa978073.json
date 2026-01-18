@@ -1,0 +1,32 @@
+{
+  "schema_id": "urn:ieim:schema:normalized-message:1.0.0",
+  "schema_version": "1.0.0",
+  "message_id": "af708e2b-42d1-5b36-81b3-70f1aa978073",
+  "run_id": "8e41f141-3b87-514a-bd65-c1e361ecff14",
+  "ingested_at": "2026-01-17T08:00:06Z",
+  "received_at": "2026-01-17T07:55:06Z",
+  "ingestion_source": "M365_GRAPH",
+  "raw_mime_uri": "data/samples/raw_mime/af708e2b-42d1-5b36-81b3-70f1aa978073.eml",
+  "raw_mime_sha256": "sha256:b91a52485a532a791cf2dab74d300cf3dde91d06ed264a3e02b7291096855a78",
+  "from_email": "kunde4@example.test",
+  "from_display_name": null,
+  "reply_to_email": null,
+  "to_emails": [
+    "billing@example.insure"
+  ],
+  "cc_emails": [],
+  "subject": "Rückzahlung und Kontodaten",
+  "subject_c14n": "rückzahlung und kontodaten",
+  "body_text": "Guten Tag, bitte überweisen Sie die Rückzahlung auf mein Konto. IBAN DE02123456780000000000. Polizzennr 77-7654321.",
+  "body_text_c14n": "guten tag, bitte überweisen sie die rückzahlung auf mein konto. iban de02123456780000000000. polizzennr 77-7654321.",
+  "language": "de",
+  "thread_keys": {
+    "internet_message_id": null,
+    "in_reply_to": null,
+    "conversation_id": null
+  },
+  "attachment_ids": [
+    "0808e0a2-1dc0-57e0-9689-bba16bd6b606"
+  ],
+  "message_fingerprint": "sha256:4762dc07da8c7c811f0b66f7bf2d33ffd4d302486337dfbb93d7c5610c86a32d"
+}

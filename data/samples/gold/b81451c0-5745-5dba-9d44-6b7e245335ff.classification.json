@@ -1,0 +1,78 @@
+{
+  "created_at": "2026-01-17T08:00:10Z",
+  "decision_hash": "sha256:9e55e4cc24821b8228bac92767945b4e05197198be85b19d1781d1ac66dd08b5",
+  "intents": [
+    {
+      "confidence": 0.8,
+      "evidence": [
+        {
+          "end": 5,
+          "snippet_redacted": "anbei",
+          "snippet_sha256": "sha256:62c41edabb982dd546331bbf6f9d74efd85c196f07e395f62fa63cef18b98477",
+          "source": "SUBJECT_C14N",
+          "start": 0
+        }
+      ],
+      "label": "INTENT_DOCUMENT_SUBMISSION"
+    }
+  ],
+  "message_id": "b81451c0-5745-5dba-9d44-6b7e245335ff",
+  "model_info": null,
+  "primary_intent": {
+    "confidence": 0.8,
+    "evidence": [
+      {
+        "end": 5,
+        "snippet_redacted": "anbei",
+        "snippet_sha256": "sha256:62c41edabb982dd546331bbf6f9d74efd85c196f07e395f62fa63cef18b98477",
+        "source": "SUBJECT_C14N",
+        "start": 0
+      }
+    ],
+    "label": "INTENT_DOCUMENT_SUBMISSION"
+  },
+  "product_line": {
+    "confidence": 0.4,
+    "evidence": [
+      {
+        "end": 20,
+        "snippet_redacted": "guten tag, anbei die",
+        "snippet_sha256": "sha256:7e7a98f51adf0238043452c9a946fea1a8c4dc71d0f9d54e474fa6c254e0a40f",
+        "source": "BODY_C14N",
+        "start": 0
+      }
+    ],
+    "label": "PROD_UNKNOWN"
+  },
+  "risk_flags": [
+    {
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "end": 16,
+          "snippet_redacted": "anbei",
+          "snippet_sha256": "sha256:62c41edabb982dd546331bbf6f9d74efd85c196f07e395f62fa63cef18b98477",
+          "source": "BODY_C14N",
+          "start": 11
+        }
+      ],
+      "label": "RISK_SECURITY_MALWARE"
+    }
+  ],
+  "run_id": "a1a18978-18ed-50a2-8909-e2e9cb6b78a6",
+  "schema_id": "urn:ieim:schema:classification-result:1.0.0",
+  "schema_version": "1.0.0",
+  "urgency": {
+    "confidence": 0.6,
+    "evidence": [
+      {
+        "end": 36,
+        "snippet_redacted": "bitte",
+        "snippet_sha256": "sha256:cca501495f4d40c2a3c570b1f6a372d1b4013c0ed01f6bead1eb64031692503c",
+        "source": "BODY_C14N",
+        "start": 31
+      }
+    ],
+    "label": "URG_HIGH"
+  }
+}
