@@ -16,18 +16,18 @@ High-level pipeline and integration boundaries:
 
 ```mermaid
 flowchart LR
-  A[Mail Ingestion] --> B[Raw Store (immutable)]
-  B --> C[Normalize]
-  C --> D[Attachment Processing]
-  D --> E[Identity Resolution]
-  E --> F[Classification (rules/model/LLM gated)]
-  F --> G[Extraction]
-  G --> H[Routing Engine (deterministic)]
-  H --> I[Case/Ticket Adapter]
-  H --> J[HITL Gate]
-  J -->|review| K[Review UI/API]
+  A["Mail Ingestion"] --> B["Raw Store (immutable)"]
+  B --> C["Normalize"]
+  C --> D["Attachment Processing"]
+  D --> E["Identity Resolution"]
+  E --> F["Classification (rules/model/LLM gated)"]
+  F --> G["Extraction"]
+  G --> H["Routing Engine (deterministic)"]
+  H --> I["Case/Ticket Adapter"]
+  H --> J["HITL Gate"]
+  J -->|review| K["Review UI/API"]
   K --> H
-  C --> L[Audit Store (hash chain)]
+  C --> L["Audit Store (hash chain)"]
   D --> L
   E --> L
   F --> L
