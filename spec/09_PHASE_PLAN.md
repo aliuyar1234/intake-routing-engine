@@ -131,11 +131,11 @@ Detailed plan and required decisions: `spec/13_ENTERPRISE_PHASE_PLAN_P9_PLUS.md`
 Tasks:
 - T-041 Service entrypoints and process model (DONE)
 - T-042 Configuration layering and validation (DONE)
-- T-043 Production persistence adapters (interfaces + one chosen implementation) (IN PROGRESS)
-- T-044 Broker interface + one chosen implementation (IN PROGRESS)
-- T-045 Deterministic job orchestration and idempotency (IN PROGRESS)
+- T-043 Production persistence adapters (interfaces + one chosen implementation) (DONE)
+- T-044 Broker interface + one chosen implementation (DONE)
+- T-045 Deterministic job orchestration and idempotency (DONE)
 
-Gate G-010 (NOT STARTED):
+Gate G-010 (PASSED):
 - Deployable services start in local mode
 - Config validation passes for dev and prod configs
 - Store + broker contracts are implemented and tested
