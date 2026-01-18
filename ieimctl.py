@@ -20,6 +20,7 @@ from ieim.ops.retention import load_retention_config, run_raw_retention
 from ieim.pipeline.p6_reprocess import ReprocessRunner
 from ieim.route.evaluator import evaluate_routing
 from ieim.route.ruleset import load_routing_ruleset
+from ieim.runtime.config import validate_config_file
 
 
 def _require_dict(obj: Any, *, path: str) -> dict[str, Any]:
@@ -268,6 +269,18 @@ def cmd_pack_verify(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_config_validate(args: argparse.Namespace) -> int:
+    repo_root = Path(__file__).resolve().parent
+    cfg_path = _resolve_repo_path(repo_root, args.config)
+    try:
+        validate_config_file(path=cfg_path)
+    except Exception as e:
+        print(f"CONFIG_VALIDATE_FAILED: {e}")
+        return 60
+    print("CONFIG_VALIDATE_OK")
+    return 0
+
+
 def _load_corrections(path: Path) -> list[dict[str, Any]]:
     obj = json.loads(path.read_text(encoding="utf-8"))
     if isinstance(obj, dict) and "corrections" in obj:
@@ -434,6 +447,13 @@ def main(argv: list[str] | None = None) -> int:
 
     pack_verify = pack_sub.add_parser("verify")
     pack_verify.set_defaults(func=cmd_pack_verify)
+
+    config = sub.add_parser("config")
+    config_sub = config.add_subparsers(dest="config_command", required=True)
+
+    cfg_validate = config_sub.add_parser("validate")
+    cfg_validate.add_argument("--config", default="configs/dev.yaml", help="Config file (repo-relative).")
+    cfg_validate.set_defaults(func=cmd_config_validate)
 
     rules = sub.add_parser("rules")
     rules_sub = rules.add_subparsers(dest="rules_command", required=True)
