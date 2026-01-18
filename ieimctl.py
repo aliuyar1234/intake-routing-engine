@@ -281,6 +281,160 @@ def cmd_config_validate(args: argparse.Namespace) -> int:
     return 0
 
 
+def _next_demo_run_dir(*, base_dir: Path) -> Path:
+    base_dir.mkdir(parents=True, exist_ok=True)
+    max_n = 0
+    for p in base_dir.iterdir():
+        if not p.is_dir():
+            continue
+        name = p.name
+        if not name.startswith("run_"):
+            continue
+        suffix = name[len("run_") :]
+        if suffix.isdigit():
+            max_n = max(max_n, int(suffix))
+    out = base_dir / f"run_{max_n + 1:03d}"
+    out.mkdir(parents=True, exist_ok=False)
+    return out
+
+
+def cmd_demo_run(args: argparse.Namespace) -> int:
+    repo_root = Path(__file__).resolve().parent
+    cfg_path = _resolve_repo_path(repo_root, args.config)
+    samples_dir = _resolve_repo_path(repo_root, args.samples)
+    out_base_dir = _resolve_repo_path(repo_root, args.out_dir)
+
+    try:
+        validate_config_file(path=cfg_path)
+    except Exception as e:
+        print(f"DEMO_RUN_FAILED: invalid config: {e}")
+        return 10
+
+    normalized_dir = samples_dir / "emails"
+    attachments_dir = samples_dir / "attachments"
+
+    if not normalized_dir.exists():
+        print(f"DEMO_RUN_FAILED: missing samples emails dir: {normalized_dir}")
+        return 10
+    if not attachments_dir.exists():
+        print(f"DEMO_RUN_FAILED: missing samples attachments dir: {attachments_dir}")
+        return 10
+
+    try:
+        run_dir = _next_demo_run_dir(base_dir=out_base_dir)
+    except Exception as e:
+        print(f"DEMO_RUN_FAILED: failed to create output dir: {e}")
+        return 60
+
+    crm_mapping: dict[str, list[str]] = {}
+    if args.crm_mapping is not None:
+        try:
+            crm_mapping = _load_crm_mapping(_resolve_repo_path(repo_root, args.crm_mapping))
+        except Exception as e:
+            print(f"DEMO_RUN_FAILED: invalid --crm-mapping: {e}")
+            return 10
+
+    from ieim.case_adapter.adapter import InMemoryCaseAdapter
+    from ieim.identity.adapters import InMemoryCRMAdapter, InMemoryClaimsAdapter, InMemoryPolicyAdapter
+    from ieim.pipeline.p3_identity_resolution import IdentityResolutionRunner
+    from ieim.pipeline.p4_classify_extract import ClassifyExtractRunner
+    from ieim.pipeline.p5_case_adapter import CaseAdapterRunner
+    from ieim.pipeline.p5_routing import RoutingRunner
+    from ieim.pipeline.p7_hitl import HitlReviewItemsRunner
+
+    audit_logger = FileAuditLogger(base_dir=run_dir)
+
+    policy_adapter = InMemoryPolicyAdapter(valid_policy_numbers=None)
+    claims_adapter = InMemoryClaimsAdapter(valid_claim_numbers=None)
+    crm_adapter = InMemoryCRMAdapter(email_to_policy_numbers=dict(crm_mapping))
+
+    try:
+        identity_results = IdentityResolutionRunner(
+            repo_root=repo_root,
+            normalized_dir=normalized_dir,
+            attachments_dir=attachments_dir,
+            identity_out_dir=run_dir / "identity",
+            drafts_out_dir=run_dir / "drafts",
+            policy_adapter=policy_adapter,
+            claims_adapter=claims_adapter,
+            crm_adapter=crm_adapter,
+            audit_logger=audit_logger,
+            config_path_override=cfg_path,
+        ).run()
+
+        classify_extract_results = ClassifyExtractRunner(
+            repo_root=repo_root,
+            normalized_dir=normalized_dir,
+            attachments_dir=attachments_dir,
+            classification_out_dir=run_dir / "classification",
+            extraction_out_dir=run_dir / "extraction",
+            audit_logger=audit_logger,
+            config_path_override=cfg_path,
+        ).run()
+
+        routing_results = RoutingRunner(
+            repo_root=repo_root,
+            normalized_dir=normalized_dir,
+            identity_dir=run_dir / "identity",
+            classification_dir=run_dir / "classification",
+            routing_out_dir=run_dir / "routing",
+            audit_logger=audit_logger,
+            config_path_override=cfg_path,
+        ).run()
+
+        case_results = CaseAdapterRunner(
+            repo_root=repo_root,
+            normalized_dir=normalized_dir,
+            attachments_dir=attachments_dir,
+            routing_dir=run_dir / "routing",
+            drafts_dir=run_dir / "drafts",
+            case_out_dir=run_dir / "case",
+            adapter=InMemoryCaseAdapter(),
+            audit_logger=audit_logger,
+        ).run()
+
+        hitl_results = HitlReviewItemsRunner(
+            repo_root=repo_root,
+            normalized_dir=normalized_dir,
+            attachments_dir=attachments_dir,
+            identity_dir=run_dir / "identity",
+            classification_dir=run_dir / "classification",
+            extraction_dir=run_dir / "extraction",
+            routing_dir=run_dir / "routing",
+            drafts_dir=run_dir / "drafts",
+            hitl_out_dir=run_dir / "hitl",
+            audit_logger=audit_logger,
+        ).run()
+    except Exception as e:
+        print(f"DEMO_RUN_FAILED: pipeline error: {type(e).__name__}: {e}")
+        return 60
+
+    schema_path = repo_root / "schemas" / "audit_event.schema.json"
+    audit_dir = run_dir / "audit"
+    audit_result = verify_audit_logs(audit_dir=audit_dir, schema_path=schema_path)
+    if audit_result.files_checked == 0:
+        print(f"DEMO_RUN_FAILED: no audit logs found in: {audit_dir}")
+        return 60
+    if not audit_result.ok:
+        print("DEMO_RUN_FAILED: audit verify failed")
+        for err in audit_result.errors[:200]:
+            print(err)
+        return 60
+
+    print(
+        "DEMO_RUN_OK:"
+        f" out_dir={run_dir.as_posix()}"
+        f" identity={len(identity_results)}"
+        f" classify_extract={len(classify_extract_results)}"
+        f" routing={len(routing_results)}"
+        f" case={len(case_results)}"
+        f" hitl={len(hitl_results)}"
+        f" audit_files={audit_result.files_checked}"
+        f" audit_events={audit_result.events_checked}"
+    )
+    return 0
+
+
 def _load_corrections(path: Path) -> list[dict[str, Any]]:
     obj = json.loads(path.read_text(encoding="utf-8"))
     if isinstance(obj, dict) and "corrections" in obj:
@@ -454,6 +608,28 @@ def main(argv: list[str] | None = None) -> int:
     cfg_validate = config_sub.add_parser("validate")
     cfg_validate.add_argument("--config", default="configs/dev.yaml", help="Config file (repo-relative).")
     cfg_validate.set_defaults(func=cmd_config_validate)
+
+    demo = sub.add_parser("demo")
+    demo_sub = demo.add_subparsers(dest="demo_command", required=True)
+
+    demo_run = demo_sub.add_parser("run")
+    demo_run.add_argument("--config", default="configs/dev.yaml", help="Config file (repo-relative).")
+    demo_run.add_argument(
+        "--samples",
+        default="data/samples",
+        help="Sample corpus base directory (repo-relative unless absolute).",
+    )
+    demo_run.add_argument(
+        "--out-dir",
+        default="out/demo",
+        help="Output base directory for demo runs (repo-relative unless absolute).",
+    )
+    demo_run.add_argument(
+        "--crm-mapping",
+        default=None,
+        help="Optional JSON file mapping sender email to policy numbers.",
+    )
+    demo_run.set_defaults(func=cmd_demo_run)
 
     rules = sub.add_parser("rules")
     rules_sub = rules.add_subparsers(dest="rules_command", required=True)

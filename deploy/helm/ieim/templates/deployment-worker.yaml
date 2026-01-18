@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ieim.fullname" . }}-worker
+  labels:
+    {{- include "ieim.labels" . | nindent 4 }}
+    app.kubernetes.io/component: worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "ieim.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: worker
+  template:
+    metadata:
+      labels:
+        {{- include "ieim.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: worker
+    spec:
+      serviceAccountName: {{ include "ieim.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: worker
+          image: "{{ .Values.image.worker.repository }}:{{ .Values.image.worker.tag }}"
+          imagePullPolicy: {{ .Values.image.worker.pullPolicy }}
+          args:
+            - "--config"
+            - "/app/configs/{{ .Values.config.fileName }}"
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources.worker | nindent 12 }}
+          livenessProbe:
+            exec:
+              command:
+                - python
+                - -m
+                - ieim.worker.main
+                - --dry-run
+                - --config
+                - /app/configs/{{ .Values.config.fileName }}
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+                - python
+                - -m
+                - ieim.worker.main
+                - --dry-run
+                - --config
+                - /app/configs/{{ .Values.config.fileName }}
+            initialDelaySeconds: 5
+            periodSeconds: 30
+            timeoutSeconds: 5
+          volumeMounts:
+            - name: config
+              mountPath: /app/configs/{{ .Values.config.fileName }}
+              subPath: {{ .Values.config.fileName }}
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "ieim.fullname" . }}-config
+        - name: tmp
+          emptyDir: {}

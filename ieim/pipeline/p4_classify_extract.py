@@ -162,9 +162,12 @@ class ClassifyExtractRunner:
     extraction_out_dir: Path
     audit_logger: Optional[FileAuditLogger] = None
     obs_logger: Optional[FileObservabilityLogger] = None
+    config_path_override: Optional[Path] = None
 
     def _load_config(self, *, nm: dict) -> IEIMConfig:
-        config_path = select_config_path_for_message(repo_root=self.repo_root, normalized_message=nm)
+        config_path = self.config_path_override or select_config_path_for_message(
+            repo_root=self.repo_root, normalized_message=nm
+        )
         return load_config(path=config_path)
 
     def run(self) -> list[tuple[dict, dict]]:

@@ -1,0 +1,4 @@
+localhost:8443, proxy:8443 {
+  tls internal
+  reverse_proxy api:8080
+}

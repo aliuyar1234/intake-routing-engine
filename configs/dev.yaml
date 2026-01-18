@@ -2,6 +2,23 @@ pack:
   system_id: IEIM
   canonical_spec_semver: "1.0.1"
 
+auth:
+  oidc:
+    enabled: false
+    issuer_url: "disabled"
+    audience: null
+    actor_id_claim: "sub"
+    roles_claim: "realm_access.roles"
+    role_name_map: {}
+    accepted_algorithms:
+      - "RS256"
+    leeway_seconds: 60
+    http_timeout_seconds: 3
+    direct_grant:
+      enabled: false
+      client_id: "disabled"
+      client_secret: null
+
 runtime:
   determinism_mode: true
   supported_languages:

@@ -1,0 +1,57 @@
+{{- if .Values.cronjobs.auditVerify.enabled -}}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "ieim.fullname" . }}-audit-verify
+  labels:
+    {{- include "ieim.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.cronjobs.auditVerify.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            {{- include "ieim.selectorLabels" . | nindent 12 }}
+            app.kubernetes.io/component: audit-verify
+        spec:
+          serviceAccountName: {{ include "ieim.serviceAccountName" . }}
+          securityContext:
+            {{- toYaml .Values.podSecurityContext | nindent 12 }}
+          restartPolicy: Never
+          containers:
+            - name: audit-verify
+              image: "{{ .Values.image.api.repository }}:{{ .Values.image.api.tag }}"
+              imagePullPolicy: {{ .Values.image.api.pullPolicy }}
+              command:
+                - python
+                - ieimctl.py
+                - audit
+                - verify
+                - --audit-dir
+                - {{ .Values.cronjobs.auditVerify.auditDir | quote }}
+              securityContext:
+                {{- toYaml .Values.containerSecurityContext | nindent 16 }}
+              resources:
+                {{- toYaml .Values.resources.scheduler | nindent 16 }}
+              volumeMounts:
+                - name: config
+                  mountPath: /app/configs/{{ .Values.config.fileName }}
+                  subPath: {{ .Values.config.fileName }}
+                  readOnly: true
+                - name: tmp
+                  mountPath: /tmp
+                - name: work
+                  mountPath: /var/lib/ieim
+          volumes:
+            - name: config
+              configMap:
+                name: {{ include "ieim.fullname" . }}-config
+            - name: tmp
+              emptyDir: {}
+            - name: work
+              emptyDir: {}
+{{- end }}

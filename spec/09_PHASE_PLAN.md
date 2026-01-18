@@ -143,34 +143,34 @@ Gate G-010 (PASSED):
 ## P10 - Installable Docker Compose distribution (starter and production profiles)
 
 Tasks:
-- T-046 Docker images (OPEN)
-- T-047 Compose starter profile (OPEN)
-- T-048 Compose production-hardened profile (OPEN)
-- T-049 Install and operator docs (OPEN)
+- T-046 Docker images (DONE)
+- T-047 Compose starter profile (DONE)
+- T-048 Compose production-hardened profile (DONE)
+- T-049 Install and operator docs (DONE)
 
-Gate G-011 (NOT STARTED):
+Gate G-011 (PASSED):
 - Compose install works end-to-end on the sample corpus
 - Secure defaults (non-root, least exposure) are enforced
 
 ## P11 - Kubernetes and Helm distribution (enterprise install path)
 
 Tasks:
-- T-050 Helm chart skeleton (OPEN)
-- T-051 External dependency configuration (OPEN)
-- T-052 Operational jobs (OPEN)
-- T-053 Kubernetes install docs (OPEN)
+- T-050 Helm chart skeleton (DONE)
+- T-051 External dependency configuration (DONE)
+- T-052 Operational jobs (DONE)
+- T-053 Kubernetes install docs (DONE)
 
-Gate G-012 (NOT STARTED):
+Gate G-012 (PASSED):
 - Helm chart renders valid manifests and passes hardening checks
 
 ## P12 - Enterprise authentication, RBAC hardening, and Review UI (if required)
 
 Tasks:
-- T-054 OIDC integration in API (OPEN)
-- T-055 Review API implementation (OPEN)
-- T-056 Minimal web UI (conditional) (OPEN)
+- T-054 OIDC integration in API (DONE)
+- T-055 Review API implementation (DONE)
+- T-056 Minimal web UI (conditional) (DONE)
 
-Gate G-013 (NOT STARTED):
+Gate G-013 (PASSED):
 - Auth and HITL readiness (RBAC fail-closed, audited corrections)
 
 ## P13 - Production integrations (mail ingest and case adapter)

@@ -1,0 +1,134 @@
+services:
+  proxy:
+    image: caddy:2.8.4
+    user: "10001:10001"
+    ports:
+      - "${IEIM_HTTPS_PORT:-8443}:8443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    tmpfs:
+      - /data:uid=10001,gid=10001,mode=700
+      - /config:uid=10001,gid=10001,mode=700
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  api:
+    image: ieim-api:production
+    build:
+      context: ../../..
+      dockerfile: deploy/compose/Dockerfile.api
+    command: ["--config", "configs/prod.yaml", "--host", "0.0.0.0", "--port", "8080"]
+    volumes:
+      - ../../../configs:/app/configs:ro
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8080/healthz', timeout=2).read()",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  worker:
+    image: ieim-worker:production
+    build:
+      context: ../../..
+      dockerfile: deploy/compose/Dockerfile.worker
+    command: ["--config", "configs/prod.yaml"]
+    volumes:
+      - ../../../configs:/app/configs:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  scheduler:
+    image: ieim-scheduler:production
+    build:
+      context: ../../..
+      dockerfile: deploy/compose/Dockerfile.scheduler
+    command: ["--config", "configs/prod.yaml"]
+    volumes:
+      - ../../../configs:/app/configs:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  retention:
+    image: ieim-api:production
+    profiles: ["ops"]
+    entrypoint:
+      [
+        "sh",
+        "-lc",
+        "while true; do python ieimctl.py retention run --config configs/prod.yaml --base-dir /var/lib/ieim --normalized-dir /var/lib/ieim/normalized --attachments-dir /var/lib/ieim/attachments --report-path /var/lib/ieim/reports/retention_report.json; sleep 86400; done",
+      ]
+    volumes:
+      - ../../../configs:/app/configs:ro
+    tmpfs:
+      - /var/lib/ieim:uid=10001,gid=10001,mode=700
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    profiles: ["embedded"]
+    environment:
+      POSTGRES_DB: ieim
+      POSTGRES_USER: ieim
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    secrets:
+      - postgres_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:3.13-alpine
+    profiles: ["embedded"]
+    environment:
+      RABBITMQ_DEFAULT_USER: ieim
+      RABBITMQ_DEFAULT_PASS: ieim_production_password
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio:latest
+    profiles: ["embedded"]
+    user: "10001:10001"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio_production_password
+    command: ["server", "/data", "--console-address", ":9001"]
+    tmpfs:
+      - /data:uid=10001,gid=10001,mode=700
+    restart: unless-stopped
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    profiles: ["embedded"]
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin_production_password
+    command: ["start-dev"]
+    restart: unless-stopped
+
+secrets:
+  postgres_password:
+    file: ./secrets/postgres_password.txt
+
+volumes:
+  postgres_data: {}
+  rabbitmq_data: {}

@@ -2,6 +2,23 @@ pack:
   system_id: IEIM
   canonical_spec_semver: "1.0.1"
 
+auth:
+  oidc:
+    enabled: true
+    issuer_url: "http://keycloak:8080/realms/ieim"
+    audience: null
+    actor_id_claim: "sub"
+    roles_claim: "realm_access.roles"
+    role_name_map: {}
+    accepted_algorithms:
+      - "RS256"
+    leeway_seconds: 60
+    http_timeout_seconds: 3
+    direct_grant:
+      enabled: true
+      client_id: "ieim-ui"
+      client_secret: null
+
 runtime:
   determinism_mode: false
   supported_languages:

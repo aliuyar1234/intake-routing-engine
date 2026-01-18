@@ -1,0 +1,6 @@
+apiVersion: v2
+name: ieim
+description: Insurance Email Input Manager (IEIM)
+type: application
+version: 0.1.0
+appVersion: "1.0.1"

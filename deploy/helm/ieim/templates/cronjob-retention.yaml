@@ -1,0 +1,68 @@
+{{- if .Values.cronjobs.retention.enabled -}}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "ieim.fullname" . }}-retention
+  labels:
+    {{- include "ieim.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.cronjobs.retention.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            {{- include "ieim.selectorLabels" . | nindent 12 }}
+            app.kubernetes.io/component: retention
+        spec:
+          serviceAccountName: {{ include "ieim.serviceAccountName" . }}
+          securityContext:
+            {{- toYaml .Values.podSecurityContext | nindent 12 }}
+          restartPolicy: Never
+          containers:
+            - name: retention
+              image: "{{ .Values.image.scheduler.repository }}:{{ .Values.image.scheduler.tag }}"
+              imagePullPolicy: {{ .Values.image.scheduler.pullPolicy }}
+              command:
+                - python
+                - ieimctl.py
+                - retention
+                - run
+                - --config
+                - /app/configs/{{ .Values.config.fileName }}
+                - --base-dir
+                - {{ .Values.cronjobs.retention.baseDir | quote }}
+                - --normalized-dir
+                - {{ .Values.cronjobs.retention.normalizedDir | quote }}
+                - --attachments-dir
+                - {{ .Values.cronjobs.retention.attachmentsDir | quote }}
+                - --report-path
+                - /var/lib/ieim/reports/retention_report.json
+                {{- if .Values.cronjobs.retention.apply }}
+                - --apply
+                {{- end }}
+              securityContext:
+                {{- toYaml .Values.containerSecurityContext | nindent 16 }}
+              resources:
+                {{- toYaml .Values.resources.scheduler | nindent 16 }}
+              volumeMounts:
+                - name: config
+                  mountPath: /app/configs/{{ .Values.config.fileName }}
+                  subPath: {{ .Values.config.fileName }}
+                  readOnly: true
+                - name: tmp
+                  mountPath: /tmp
+                - name: work
+                  mountPath: /var/lib/ieim
+          volumes:
+            - name: config
+              configMap:
+                name: {{ include "ieim.fullname" . }}-config
+            - name: tmp
+              emptyDir: {}
+            - name: work
+              emptyDir: {}
+{{- end }}

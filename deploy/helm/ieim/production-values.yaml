@@ -1,0 +1,13 @@
+image:
+  api:
+    repository: ieim-api
+    tag: "production"
+    pullPolicy: IfNotPresent
+  worker:
+    repository: ieim-worker
+    tag: "production"
+    pullPolicy: IfNotPresent
+  scheduler:
+    repository: ieim-scheduler
+    tag: "production"
+    pullPolicy: IfNotPresent

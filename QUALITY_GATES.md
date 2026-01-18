@@ -177,6 +177,7 @@ Minimum commands:
 - `bash scripts/verify_pack.sh`
 - `python -B -m unittest discover -s tests -p "test_*.py"`
 - `helm template ieim deploy/helm/ieim -f deploy/helm/ieim/values.yaml`
+- If Helm is not installed: `docker run --rm -v "$PWD:/work" -w /work alpine/helm:3.14.0 template ieim deploy/helm/ieim -f deploy/helm/ieim/values.yaml`
 
 ### G-013 (P12) — Auth and HITL readiness
 

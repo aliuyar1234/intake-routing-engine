@@ -54,6 +54,7 @@ class IdentityResolutionRunner:
     crm_adapter: CRMAdapter
     audit_logger: Optional[FileAuditLogger] = None
     obs_logger: Optional[FileObservabilityLogger] = None
+    config_path_override: Optional[Path] = None
 
     def run(self) -> list[dict]:
         produced: list[dict] = []
@@ -64,7 +65,7 @@ class IdentityResolutionRunner:
             nm_bytes = nm_path.read_bytes()
             nm = json.loads(nm_bytes.decode("utf-8"))
 
-            config_path = select_config_path_for_message(
+            config_path = self.config_path_override or select_config_path_for_message(
                 repo_root=self.repo_root, normalized_message=nm
             )
             config = load_identity_config(path=config_path)
