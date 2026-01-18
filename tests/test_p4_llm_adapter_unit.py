@@ -1,6 +1,7 @@
 import json
 import tempfile
 import unittest
+from dataclasses import replace
 from pathlib import Path
 
 from ieim.config import load_config
@@ -40,6 +41,7 @@ class TestP4LLMAdapterUnit(unittest.TestCase):
     def test_llm_adapter_uses_cache(self) -> None:
         root = Path(__file__).resolve().parents[1]
         cfg = load_config(path=root / "configs" / "prod.yaml")
+        cfg = replace(cfg, classification=replace(cfg.classification, llm=replace(cfg.classification.llm, max_calls_per_day=10)))
         stub = _StubProvider(
             outputs=[
                 {
@@ -87,6 +89,13 @@ class TestP4LLMAdapterUnit(unittest.TestCase):
     def test_llm_gate_allows_low_confidence_no_risk_flags(self) -> None:
         root = Path(__file__).resolve().parents[1]
         cfg = load_config(path=root / "configs" / "prod.yaml")
+        cfg = replace(
+            cfg,
+            classification=replace(
+                cfg.classification,
+                llm=replace(cfg.classification.llm, enabled=True, provider="openai"),
+            ),
+        )
 
         det = {"risk_flags": [], "primary_intent": {"confidence": 0.1}}
         gate = should_call_llm_classify(config=cfg, deterministic_classification=det)
@@ -174,4 +183,3 @@ class TestP4LLMAdapterUnit(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

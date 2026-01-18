@@ -40,17 +40,17 @@ classification:
   min_confidence_for_auto: 0.80
   rules_version: "1.0.0"
   llm:
-    enabled: true
-    provider: "openai"
-    model_name: "gpt-4.1"
-    model_version: "pinned"
+    enabled: false
+    provider: "disabled"
+    model_name: "disabled"
+    model_version: "disabled"
     prompt_versions:
       classify: "1.0.0"
       extract: "1.0.0"
     token_budgets:
       classify: 900
       extract: 1200
-    max_calls_per_day: 25000
+    max_calls_per_day: 0
 
 extraction:
   iban_policy:

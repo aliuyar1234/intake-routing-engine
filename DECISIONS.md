@@ -43,13 +43,14 @@ This file contains decision records required for the IEIM implementation.
 ## DR-004 — Default technology stack
 
 - **Problem**: The implementation requires strong NLP/OCR integration and fast iteration while meeting enterprise NFRs.
-- **Decision**: Use a Python-first stack (FastAPI + Pydantic + PostgreSQL + Kafka/Redpanda + S3-compatible object storage + OpenTelemetry).
+- **Decision**: Use a Python-first stack (FastAPI + Pydantic + PostgreSQL + RabbitMQ + S3-compatible object storage + OpenTelemetry).
 - **Why**: Balances time-to-ship, hiring availability, determinism, and on-prem/hybrid deployment.
 - **Tradeoffs**: Performance-critical hotspots may require Go/Rust later.
 - **Affected FR/NFR**: NFR-002, NFR-011.
 - **Affected files**:
   - `tech/STACK.md`
   - `tech/ARCH_DECISIONS.md`
+  - `spec/14_ENTERPRISE_DEFAULTS.md`
 
 ## DR-005 - decision_hash canonical input (identity stage)
 
@@ -108,3 +109,13 @@ This file contains decision records required for the IEIM implementation.
   - `ieim/determinism/jcs.py`
   - `ieim/determinism/decision_hash.py`
   - `data/samples/gold/*.routing.json`
+
+## DR-008 — Enterprise-ready defaults (P9+)
+
+- **Problem**: The SSOT pack + reference implementation does not define a production-grade, installable “default stack” without introducing assumptions.
+- **Decision**: Lock enterprise-ready install defaults for phases P9–P16 (distribution, infra, auth/RBAC baseline, integrations, observability, performance targets, and LLM default posture).
+- **Why**: Enables deterministic implementation planning and removes ambiguity (“no guessing”) when adding production packaging, persistence, and real integrations.
+- **Tradeoffs**: Some enterprise environments will require overrides (e.g., existing OIDC provider, external Postgres/S3/RabbitMQ, different ticket system).
+- **Affected FR/NFR**: NFR-001, NFR-002, NFR-003, NFR-006, NFR-009, NFR-011.
+- **Decision record**:
+  - `spec/14_ENTERPRISE_DEFAULTS.md`

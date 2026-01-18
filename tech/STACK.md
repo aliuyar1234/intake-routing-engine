@@ -7,11 +7,11 @@ This pack is implementation-neutral but provides a recommended default stack tha
 - Language: Python 3.12
 - Framework: FastAPI for service APIs
 - Worker runtime: Celery or Dramatiq
-- Queue: RabbitMQ or Redis Streams (dev), Kafka (prod)
-- Database: PostgreSQL (normalized store)
-- Object store: S3-compatible (raw store and attachment extracted text)
-- Audit store: PostgreSQL append-only table or Kafka->immutable log, with hash chain
-- Observability: OpenTelemetry, Prometheus, Grafana, Loki
+- Queue: RabbitMQ
+- Database: PostgreSQL (metadata and indexes; no raw bytes)
+- Object store: S3-compatible (raw store, attachments, and derived artifacts)
+- Audit store: append-only events with a hash chain (immutable, verifiable)
+- Observability: OpenTelemetry, Prometheus, Grafana; logs as structured JSON to stdout (aggregation backend is deployment-specific)
 
 Strengths
 - Fast delivery, strong ecosystem for MIME/OCR/PDF tooling

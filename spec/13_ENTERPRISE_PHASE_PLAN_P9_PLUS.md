@@ -8,6 +8,12 @@ This document is written so Codex can implement **without inventing contracts**.
 
 ---
 
+## Decisions locked
+
+The required enterprise defaults are now decided and recorded in `spec/14_ENTERPRISE_DEFAULTS.md` (see DR-008 in `DECISIONS.md`).
+
+Section 0 is retained for background/context; treat the defaults in `spec/14_ENTERPRISE_DEFAULTS.md` as binding for implementation.
+
 ## 0) Required decisions and questions (must be answered before starting P9)
 
 These are the remaining open decisions that prevent a “plug‑and‑play” enterprise install from being defined without assumptions. Answering them converts uncertainty into explicit requirements and prevents drift.
@@ -325,7 +331,7 @@ Add production assets under dedicated folders, leaving `spec/` and `schemas/` as
 - **T-044: Broker interface and one concrete broker implementation (chosen by decision B3)**
   - Deliverables:
     - `ieim/broker/broker.py` interface
-    - one implementation: RabbitMQ or Redis Streams or Kafka
+    - one implementation: RabbitMQ
     - dead-letter semantics and retry limits (fail-closed)
   - Tests:
     - `tests/test_broker_contracts.py`
@@ -372,7 +378,7 @@ Add production assets under dedicated folders, leaving `spec/` and `schemas/` as
     - `deploy/compose/starter/docker-compose.yml`
     - includes:
       - api, worker, scheduler
-      - Postgres (if selected), object store (MinIO if selected), broker (per decision), OIDC provider if bundled
+      - Postgres, object store (MinIO), RabbitMQ, Keycloak (starter)
       - network isolation, only API port exposed
       - default config mounted read-only
   - Tests:
@@ -462,7 +468,7 @@ Add production assets under dedicated folders, leaving `spec/` and `schemas/` as
 
 ---
 
-### P12 — Enterprise authentication, RBAC hardening, and Review UI (if required)
+### P12 — Enterprise authentication, RBAC hardening, and Review UI
 
 **Objective:** Ensure the system is secure by default with OIDC + RBAC and provide a usable HITL experience.
 
@@ -484,7 +490,7 @@ Add production assets under dedicated folders, leaving `spec/` and `schemas/` as
   - Tests:
     - `tests/test_review_api_contract.py` validates request/response shapes
 
-- **T-056: Minimal web UI (conditional on decision E1)**
+- **T-056: Minimal web UI (server-rendered, embedded in API)**
   - Deliverables:
     - `ui/` (either single-page app or server-rendered pages)
     - login via OIDC
@@ -511,7 +517,7 @@ Add production assets under dedicated folders, leaving `spec/` and `schemas/` as
 **Objective:** Provide at least one complete mail ingest path and at least one complete case adapter that a company can use immediately.
 
 **Tasks**
-- **T-057: Mail ingestion hardening (per decision D1)**
+- **T-057: Mail ingestion hardening (Microsoft 365 Graph baseline; IMAP/SMTP supported)**
   - Deliverables:
     - M365 Graph: incremental sync, robust retry, token refresh, idempotent message ingestion
     - IMAP: safe polling, UID-based incremental fetch, loop protection
@@ -519,7 +525,7 @@ Add production assets under dedicated folders, leaving `spec/` and `schemas/` as
   - Tests:
     - mock server integration tests for each adapter
 
-- **T-058: Case adapter first-class implementation (per decision D2)**
+- **T-058: Case adapter first-class implementation (ServiceNow)**
   - Deliverables:
     - implement chosen adapter fully
     - include mapping from routing actions to case system operations
@@ -527,7 +533,7 @@ Add production assets under dedicated folders, leaving `spec/` and `schemas/` as
   - Tests:
     - mock API tests with deterministic fixtures
 
-- **T-059: Generic REST identity directory adapter (if decision D3 = Option A)**
+- **T-059: Generic REST identity directory adapter (required)**
   - Deliverables:
     - `interfaces/identity_directory_adapter.md` (if not already present)
     - implementation that queries customer/policy/claim by signals
@@ -561,7 +567,7 @@ Add production assets under dedicated folders, leaving `spec/` and `schemas/` as
   - Tests:
     - `tests/test_metrics_exposed.py` validates key metrics exist
 
-- **T-061: OpenTelemetry tracing (conditional on decision G1)**
+- **T-061: OpenTelemetry tracing**
   - Deliverables:
     - OTel instrumentation with trace correlation IDs in logs
   - Tests:
@@ -662,7 +668,7 @@ Add production assets under dedicated folders, leaving `spec/` and `schemas/` as
 
 **Gate G-017 (binding): Performance gate**
 - Evidence:
-  - meets agreed throughput and latency targets (decision I1)
+  - meets the throughput and latency targets defined in `spec/14_ENTERPRISE_DEFAULTS.md`
 - Minimum commands:
   - `bash scripts/verify_pack.sh`
   - `python ieimctl.py loadtest run --profile enterprise_smoke --config configs/dev.yaml`
@@ -716,4 +722,3 @@ Add production assets under dedicated folders, leaving `spec/` and `schemas/` as
 5) Keep raw and audit stores append-only, and make replay deterministic with timestamp-free decision hashes.  
 6) Ensure the sample corpus remains the regression baseline for routing, identity, audit, and HITL behavior.  
 7) Keep the repository installable via the chosen distribution path and make documentation part of gates.
-

@@ -26,7 +26,7 @@ Rules are versioned and changes require approval; routing safety overrides must 
 
 ## LLM usage policy
 
-LLM calls are optional and must be disabled by default in determinism mode. When enabled:
+LLM calls are optional and are disabled by default. Determinism mode enforces disabled. When enabled:
 - Only minimized, redacted inputs may be sent externally
 - The model must return strict JSON only
 - Outputs are schema validated and label validated

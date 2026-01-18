@@ -53,6 +53,7 @@ Details: `spec/02_ARCHITECTURE.md`
 - Scope and requirements: `spec/01_SCOPE.md`
 - Phase plan and gates: `spec/09_PHASE_PLAN.md` and `QUALITY_GATES.md`
 - Enterprise-ready roadmap (P9+): `spec/13_ENTERPRISE_PHASE_PLAN_P9_PLUS.md`
+- Enterprise defaults (P9+): `spec/14_ENTERPRISE_DEFAULTS.md`
 - Contracts (JSON Schemas): `schemas/`
 - Interfaces (adapters and HITL): `interfaces/`
 - Prompts and strict JSON contracts: `prompts/`
@@ -85,7 +86,7 @@ python ieimctl.py pack verify
 
 ## LLM usage (policy-gated)
 
-LLM calls are optional and are gated to preserve safety and reproducibility. The reference implementation supports:
+LLM calls are optional, are gated to preserve safety and reproducibility, and are disabled by default. The reference implementation supports:
 
 - External provider (OpenAI) when enabled
 - Local provider via Ollama for on-prem deployments
