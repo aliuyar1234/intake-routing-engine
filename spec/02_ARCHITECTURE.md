@@ -5,26 +5,84 @@ This section describes IEIM's logical and physical architecture, including data 
 ## End-to-end flow (logical)
 
 ```mermaid
-flowchart LR
-  A["Mail Ingestion"] --> B["Raw Store (immutable)"]
-  B --> C["Normalize"]
-  C --> D["Attachment Processing"]
-  D --> E["Identity Resolution"]
-  E --> F["Classification (rules/model/LLM gated)"]
-  F --> G["Extraction"]
-  G --> H["Routing Engine (deterministic)"]
-  H --> I["Case/Ticket Adapter"]
-  H --> J["HITL Gate"]
-  J -->|review| K["Review UI/API"]
-  K --> H
-  C --> L["Audit Store (hash chain)"]
-  D --> L
-  E --> L
-  F --> L
-  G --> L
-  H --> L
-  I --> L
-  K --> L
+flowchart TB
+  %% Ingress + preservation
+  subgraph S0["Ingress + Preservation"]
+    A["Mail connectors: M365/IMAP/SMTP"] --> B["Dedupe + idempotent intake"]
+    B --> C["Raw Store (append-only MIME + attachments)"]
+    B -->|schemas/audit_event.schema.json| D["Audit: INGEST event (hash chain)"]
+  end
+
+  %% Normalization + content prep
+  subgraph S1["Normalize + Content Prep"]
+    C --> E["Normalize MIME: headers, thread, lang, metadata"]
+    E -->|schemas/normalized_message.schema.json| F["Attachment pipeline: AV, type detect, OCR/extract"]
+    F -->|schemas/attachment_artifact.schema.json| G["Text assembly: body + attachments + redaction map"]
+    E -->|schemas/audit_event.schema.json| H["Audit: NORMALIZE event"]
+    F -->|schemas/audit_event.schema.json| I["Audit: ATTACHMENT event"]
+    G -->|schemas/audit_event.schema.json| J["Audit: CONTENT event"]
+  end
+
+  %% Intelligence gates
+  subgraph S2["Identity + Intelligence Gates"]
+    G --> K["Identity candidates + deterministic scoring"]
+    K --> L{ "LLM allowed?" }
+    L -->|no / determinism| M["Rule + model classify"]
+    L -->|yes| N["LLM classify (strict JSON)"]
+    N --> O["LLM result cache (fingerprint)"]
+    K -->|schemas/identity_resolution_result.schema.json| L
+    M -->|schemas/classification_result.schema.json| P["Classification result"]
+    N -->|schemas/classification_result.schema.json| P
+    P --> Q["Entity extraction + validation + provenance"]
+    Q -->|schemas/extraction_result.schema.json| U["Routing decision (deterministic tables)"]
+    K -->|schemas/audit_event.schema.json| R["Audit: IDENTITY event"]
+    P -->|schemas/audit_event.schema.json| S["Audit: CLASSIFY event"]
+    Q -->|schemas/audit_event.schema.json| T["Audit: EXTRACT event"]
+  end
+
+  %% Decisions + human loop
+  subgraph S3["Routing + Human Review"]
+    U --> V{ "HITL required?" }
+    V -->|yes| W["Review UI/API + corrections"]
+    W --> U
+    U -->|schemas/routing_decision.schema.json| X["Case/Ticket adapter (idempotent)"]
+    X --> Y["Downstream systems: claims/policy/case"]
+    U -->|schemas/audit_event.schema.json| Z["Audit: ROUTE event"]
+    W -->|schemas/audit_event.schema.json| AA["Audit: REVIEW event"]
+    X -->|schemas/audit_event.schema.json| AB["Audit: ADAPTER event"]
+  end
+
+  %% Security overlays
+  subgraph S4["Security + Compliance Overlays"]
+    G --> AC["Redaction/minimization gateway (LLM)"]
+    F --> AD["Malware + DLP checks"]
+    AD --> AE["Risk flags (fraud/legal/self-harm)"]
+  end
+
+  %% Gate behavior
+  AE --> V
+  AC --> N
+```
+
+## Failure and edge-case path (logical)
+
+```mermaid
+flowchart TB
+  A["Any stage output"] --> B{ "Schema valid?" }
+  B -->|no| C["Fail-closed: route to HITL review"]
+  B -->|yes| D{ "Risk flag raised?" }
+  D -->|yes| C
+  D -->|no| E{ "Identity ambiguous?" }
+  E -->|yes| C
+  E -->|no| F{ "LLM output valid + above confidence?" }
+  F -->|no| G["Fallback to deterministic rules"]
+  G --> H{ "Deterministic confidence high?" }
+  H -->|no| C
+  H -->|yes| I["Proceed to routing"]
+  F -->|yes| I
+  C --> J["Review UI/API: corrections + approvals"]
+  J --> I
+  I --> K["Audit: failure/override reason + evidence span"]
 ```
 
 ## Runtime view (services + data paths)
@@ -61,6 +119,35 @@ flowchart LR
   W --> ID
   W --> PC
   W --> CS
+```
+
+## Control-plane vs data-plane (logical)
+
+```mermaid
+flowchart LR
+  subgraph CP["Control plane"]
+    C1["Config + ruleset registry"]
+    C2["Prompt + model registry"]
+    C3["Policy thresholds + gates"]
+    C4["Quality gates + test harness"]
+    C5["Monitoring + alerting"]
+  end
+
+  subgraph DP["Data plane"]
+    D1["Ingress adapters"]
+    D2["Pipeline workers"]
+    D3["Stores (raw/derived/normalized/audit)"]
+    D4["Integrations (identity/policy/case)"]
+  end
+
+  C1 --> D2
+  C2 --> D2
+  C3 --> D2
+  C4 --> D2
+  D2 --> D3
+  D2 --> D4
+  D1 --> D2
+  D2 --> C5
 ```
 
 ## Component model
