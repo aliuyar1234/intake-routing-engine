@@ -25,6 +25,7 @@ RUN groupadd -g 10001 ieim \
 COPY --from=builder /opt/venv /opt/venv
 
 COPY MANIFEST.sha256 MANIFEST.sha256
+COPY VERSION VERSION
 COPY ieim ieim
 COPY schemas schemas
 COPY spec spec

@@ -16,7 +16,7 @@ config:
   content: |
     pack:
       system_id: IEIM
-      canonical_spec_semver: "1.0.1"
+      canonical_spec_semver: "1.0.2"
 
     auth:
       oidc:

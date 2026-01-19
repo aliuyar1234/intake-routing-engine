@@ -1,7 +1,7 @@
 # IEIM — Single Source of Truth (SSOT)
 
 **File:** `spec/00_CANONICAL.md`  
-**Canonical version (SemVer):** `1.0.1`
+**Canonical version (SemVer):** `1.0.2`
 
 This file is the **only** authoritative location for:
 - Canonical IDs and enums (labels, queues, SLAs, stages, module IDs)
@@ -19,7 +19,7 @@ This file is the **only** authoritative location for:
 
 - SYSTEM_ID: `IEIM`
 - PACK_ID: `insure_input_manager_pack_v1_0_1`
-- CANONICAL_SPEC_SEMVER: `1.0.1`
+- CANONICAL_SPEC_SEMVER: `1.0.2`
 - HASH_ALGO_PRIMARY: `SHA-256`
 - JSON_CANONICALIZATION: `RFC8785` (JSON Canonicalization Scheme)
 

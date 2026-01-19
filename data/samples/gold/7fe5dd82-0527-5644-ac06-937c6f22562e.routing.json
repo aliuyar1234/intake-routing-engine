@@ -4,7 +4,7 @@
     "ATTACH_ALL_FILES"
   ],
   "created_at": "2026-01-17T08:00:08Z",
-  "decision_hash": "sha256:68fec8ae412acaa80c1a586e80ac110e897741344ab7a5e8ea295e5bb97056a8",
+  "decision_hash": "sha256:c1fe9a624651822d7cb46b1f961a921c6bd799be6942d1339dfe6f7177176a7b",
   "fail_closed": true,
   "fail_closed_reason": "LANGUAGE_UNSUPPORTED",
   "message_id": "7fe5dd82-0527-5644-ac06-937c6f22562e",

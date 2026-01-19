@@ -4,7 +4,7 @@
     "ATTACH_ORIGINAL_EMAIL"
   ],
   "created_at": "2026-01-17T08:00:10Z",
-  "decision_hash": "sha256:4e38df7025002df763a2393da416581289c48752b19e8b55d52e955f50b77c82",
+  "decision_hash": "sha256:365a2a168e52aba81f8ff198df6225f845c0c631f8f7cc27d18ae49f9aed5987",
   "fail_closed": true,
   "fail_closed_reason": "SECURITY_MALWARE",
   "message_id": "b81451c0-5745-5dba-9d44-6b7e245335ff",

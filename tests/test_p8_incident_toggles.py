@@ -38,7 +38,7 @@ class TestP8IncidentToggles(unittest.TestCase):
                     [
                         "pack:",
                         "  system_id: IEIM",
-                        '  canonical_spec_semver: "1.0.1"',
+                        '  canonical_spec_semver: "1.0.2"',
                         "",
                         "runtime:",
                         "  determinism_mode: false",
@@ -120,7 +120,7 @@ class TestP8IncidentToggles(unittest.TestCase):
                     [
                         "pack:",
                         "  system_id: IEIM",
-                        '  canonical_spec_semver: "1.0.1"',
+                        '  canonical_spec_semver: "1.0.2"',
                         "",
                         "runtime:",
                         "  determinism_mode: false",
@@ -179,7 +179,7 @@ class TestP8IncidentToggles(unittest.TestCase):
                     [
                         "pack:",
                         "  system_id: IEIM",
-                        '  canonical_spec_semver: "1.0.1"',
+                        '  canonical_spec_semver: "1.0.2"',
                         "",
                         "runtime:",
                         "  determinism_mode: false",
@@ -230,4 +230,3 @@ class TestP8IncidentToggles(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

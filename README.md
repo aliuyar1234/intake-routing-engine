@@ -1,4 +1,4 @@
-# Insurance Email Input Manager (IEIM) - SSOT Pack v1.0.1
+# Insurance Email Input Manager (IEIM) - SSOT Pack v1.0.2
 
 This repository is a **Single Source of Truth (SSOT) pack** for building an Insurance Email Input Manager (IEIM) as a production system. It combines specifications, schemas, configs, tests, and runbooks into a phase-by-phase delivery plan with binding quality gates.
 
@@ -109,4 +109,3 @@ Details: `spec/05_CLASSIFICATION_AND_LLM.md`
 ## License
 
 Apache-2.0 (see `LICENSE`).
-
