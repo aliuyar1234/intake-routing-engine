@@ -17,6 +17,9 @@ from ieim.auth.rbac import RbacConfig, RolePermissions, load_rbac_config
 from ieim.audit.file_audit_log import FileAuditLogger
 from ieim.hitl.review_store import FileReviewStore
 from ieim.hitl.service import HitlService
+from ieim.observability.config import ObservabilityConfig, load_observability_config
+from ieim.observability.metrics import render_prometheus
+from ieim.observability import tracing
 from ieim.runtime.config import validate_config_file
 from ieim.runtime.health import ok
 from ieim.runtime.paths import discover_repo_root
@@ -81,6 +84,7 @@ class ApiContext:
     hitl_dir: Path
     artifact_roots: Sequence[Path]
     session_cookie_name: str = "ieim_access_token"
+    observability: Optional[ObservabilityConfig] = None
 
 
 def _resolve_unique_artifact_path(*, roots: Sequence[Path], uri: str) -> Optional[Path]:
@@ -145,43 +149,110 @@ def _make_handler(ctx: ApiContext):
         def log_message(self, format: str, *args: Any) -> None:  # noqa: A002
             return
 
+        def _trace_extra_headers(self) -> dict[str, str]:
+            if ctx.observability is None or not ctx.observability.tracing_enabled:
+                return {}
+            ids = tracing.current_trace_ids()
+            if ids is None:
+                return {}
+            return {"X-Trace-Id": ids.trace_id_hex, "X-Span-Id": ids.span_id_hex}
+
+        def _access_log(self, *, status: int) -> None:
+            if ctx.observability is None or not ctx.observability.tracing_enabled:
+                return
+            ids = tracing.current_trace_ids()
+            doc = {
+                "event_type": "HTTP_ACCESS",
+                "method": str(getattr(self, "command", "") or ""),
+                "path": urlparse(self.path).path,
+                "status": int(status),
+                "trace_id": ids.trace_id_hex if ids is not None else "",
+                "span_id": ids.span_id_hex if ids is not None else "",
+            }
+            try:
+                print(json.dumps(doc, ensure_ascii=False, sort_keys=True))
+            except Exception:
+                return
+
         def _send_json(self, *, status: int, obj: Any, extra_headers: Optional[dict[str, str]] = None) -> None:
             payload = json.dumps(obj, ensure_ascii=False).encode("utf-8")
+            tracing.annotate_current_span_http_status(status_code=int(status))
             self.send_response(int(status))
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_header("Content-Length", str(len(payload)))
+            merged = dict(self._trace_extra_headers())
             if extra_headers:
-                for k, v in extra_headers.items():
-                    self.send_header(k, v)
+                merged.update(extra_headers)
+            for k, v in merged.items():
+                self.send_header(k, v)
             self.end_headers()
             self.wfile.write(payload)
+            self._access_log(status=status)
 
-        def _send_text(self, *, status: int, text: str, content_type: str = "text/plain; charset=utf-8") -> None:
+        def _send_text(
+            self,
+            *,
+            status: int,
+            text: str,
+            content_type: str = "text/plain; charset=utf-8",
+            extra_headers: Optional[dict[str, str]] = None,
+        ) -> None:
             payload = (text or "").encode("utf-8")
+            tracing.annotate_current_span_http_status(status_code=int(status))
             self.send_response(int(status))
             self.send_header("Content-Type", content_type)
             self.send_header("Content-Length", str(len(payload)))
+            merged = dict(self._trace_extra_headers())
+            if extra_headers:
+                merged.update(extra_headers)
+            for k, v in merged.items():
+                self.send_header(k, v)
             self.end_headers()
             self.wfile.write(payload)
+            self._access_log(status=status)
+
+        def _send_bytes(
+            self, *, status: int, payload: bytes, content_type: str, extra_headers: Optional[dict[str, str]] = None
+        ) -> None:
+            tracing.annotate_current_span_http_status(status_code=int(status))
+            self.send_response(int(status))
+            self.send_header("Content-Type", content_type)
+            self.send_header("Content-Length", str(len(payload)))
+            merged = dict(self._trace_extra_headers())
+            if extra_headers:
+                merged.update(extra_headers)
+            for k, v in merged.items():
+                self.send_header(k, v)
+            self.end_headers()
+            self.wfile.write(payload)
+            self._access_log(status=status)
 
         def _send_html(self, *, status: int, html_text: str, extra_headers: Optional[dict[str, str]] = None) -> None:
             payload = (html_text or "").encode("utf-8")
+            tracing.annotate_current_span_http_status(status_code=int(status))
             self.send_response(int(status))
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.send_header("Content-Length", str(len(payload)))
+            merged = dict(self._trace_extra_headers())
             if extra_headers:
-                for k, v in extra_headers.items():
-                    self.send_header(k, v)
+                merged.update(extra_headers)
+            for k, v in merged.items():
+                self.send_header(k, v)
             self.end_headers()
             self.wfile.write(payload)
+            self._access_log(status=status)
 
         def _redirect(self, *, location: str, extra_headers: Optional[dict[str, str]] = None) -> None:
+            tracing.annotate_current_span_http_status(status_code=int(HTTPStatus.FOUND))
             self.send_response(HTTPStatus.FOUND)
             self.send_header("Location", location)
+            merged = dict(self._trace_extra_headers())
             if extra_headers:
-                for k, v in extra_headers.items():
-                    self.send_header(k, v)
+                merged.update(extra_headers)
+            for k, v in merged.items():
+                self.send_header(k, v)
             self.end_headers()
+            self._access_log(status=int(HTTPStatus.FOUND))
 
         def _read_json_body(self, *, max_bytes: int = 512 * 1024) -> dict[str, Any]:
             length_raw = self.headers.get("Content-Length")
@@ -260,9 +331,27 @@ def _make_handler(ctx: ApiContext):
         def do_GET(self) -> None:  # noqa: N802 (BaseHTTPRequestHandler API)
             parsed = urlparse(self.path)
             path = parsed.path
+            carrier = {k: v for k, v in self.headers.items()}
+            parent_ctx = tracing.extract_context_from_headers(carrier)
+            with tracing.start_span(
+                f"HTTP GET {path}",
+                context=parent_ctx,
+                kind=tracing.SpanKind.SERVER,
+                attributes={"http.method": "GET", "http.target": path},
+            ):
+                self._do_GET_impl(parsed=parsed, path=path)
 
+        def _do_GET_impl(self, *, parsed, path: str) -> None:
             if path in ("/", "/ui"):
                 self._redirect(location="/ui/queues")
+                return
+
+            if path == "/metrics":
+                if ctx.observability is not None and not ctx.observability.metrics_enabled:
+                    self._send_text(status=HTTPStatus.NOT_FOUND, text="metrics disabled\n")
+                    return
+                body, ctype = render_prometheus()
+                self._send_bytes(status=HTTPStatus.OK, payload=body, content_type=ctype)
                 return
 
             if path in ("/healthz", "/readyz"):
@@ -600,7 +689,17 @@ def _make_handler(ctx: ApiContext):
         def do_POST(self) -> None:  # noqa: N802 (BaseHTTPRequestHandler API)
             parsed = urlparse(self.path)
             path = parsed.path
+            carrier = {k: v for k, v in self.headers.items()}
+            parent_ctx = tracing.extract_context_from_headers(carrier)
+            with tracing.start_span(
+                f"HTTP POST {path}",
+                context=parent_ctx,
+                kind=tracing.SpanKind.SERVER,
+                attributes={"http.method": "POST", "http.target": path},
+            ):
+                self._do_POST_impl(parsed=parsed, path=path)
 
+        def _do_POST_impl(self, *, parsed, path: str) -> None:
             if path == "/ui/login":
                 if not ctx.auth.oidc.enabled or not ctx.auth.oidc.direct_grant.enabled:
                     self._redirect(location="/ui/login")
@@ -1048,6 +1147,8 @@ def main(argv: list[str] | None = None) -> int:
 
     auth = load_auth_config(path=cfg_path)
     rbac = load_rbac_config(path=cfg_path)
+    observability = load_observability_config(path=cfg_path)
+    tracing.init_tracing(enabled=observability.tracing_enabled, service_name="ieim-api")
 
     hitl_dir = Path(args.hitl_dir)
     hitl_dir = hitl_dir if hitl_dir.is_absolute() else (repo_root / hitl_dir)
@@ -1070,6 +1171,7 @@ def main(argv: list[str] | None = None) -> int:
         oidc=OidcJwtValidator(config=auth.oidc),
         hitl_dir=hitl_dir,
         artifact_roots=artifact_roots,
+        observability=observability,
     )
 
     server = HTTPServer((str(args.host), int(args.port)), _make_handler(ctx))

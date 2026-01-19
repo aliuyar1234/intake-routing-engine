@@ -223,3 +223,11 @@ cronjobs:
     normalizedDir: "/var/lib/ieim/normalized"
     attachmentsDir: "/var/lib/ieim/attachments"
     apply: false
+
+persistence:
+  enabled: false
+  existingClaim: ""
+  size: 10Gi
+  storageClassName: ""
+  accessModes:
+    - ReadWriteOnce

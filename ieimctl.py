@@ -18,6 +18,7 @@ from ieim.identity.config_select import select_config_path_for_message
 from ieim.ops.load_test import run_load_test
 from ieim.ops.retention import load_retention_config, run_raw_retention
 from ieim.pipeline.p6_reprocess import ReprocessRunner
+from ieim.raw_store import sha256_prefixed
 from ieim.route.evaluator import evaluate_routing
 from ieim.route.ruleset import load_routing_ruleset
 from ieim.runtime.config import validate_config_file
@@ -835,6 +836,240 @@ def cmd_retention_run(args: argparse.Namespace) -> int:
     return 0
 
 
+def _parse_yaml_file(path: Path) -> Any:
+    try:
+        import yaml
+    except Exception as e:
+        raise RuntimeError(f"PyYAML dependency unavailable: {e}") from e
+    return yaml.safe_load(path.read_text(encoding="utf-8"))
+
+
+def cmd_ops_smoke(args: argparse.Namespace) -> int:
+    repo_root = Path(__file__).resolve().parent
+    cfg_path = _resolve_repo_path(repo_root, args.config)
+
+    try:
+        validate_config_file(path=cfg_path)
+    except Exception as e:
+        print(f"OPS_SMOKE_FAILED: invalid config: {e}")
+        return 10
+
+    # 1) Observability assets parse (dashboards + alert rules)
+    dashboards_dir = repo_root / "deploy" / "observability" / "grafana"
+    rules_dir = repo_root / "deploy" / "observability" / "prometheus"
+    if not dashboards_dir.exists():
+        print(f"OPS_SMOKE_FAILED: missing dashboards dir: {dashboards_dir}")
+        return 10
+    if not rules_dir.exists():
+        print(f"OPS_SMOKE_FAILED: missing prometheus rules dir: {rules_dir}")
+        return 10
+
+    try:
+        dashboards = sorted(dashboards_dir.glob("*.json"))
+        if not dashboards:
+            raise RuntimeError("no Grafana dashboard JSON files found")
+        for p in dashboards:
+            obj = json.loads(p.read_text(encoding="utf-8"))
+            if not isinstance(obj, dict) or not isinstance(obj.get("title"), str):
+                raise RuntimeError(f"invalid dashboard JSON shape: {p.name}")
+        rules_files = sorted(list(rules_dir.glob("*.yml")) + list(rules_dir.glob("*.yaml")))
+        if not rules_files:
+            raise RuntimeError("no Prometheus rules files found")
+        for p in rules_files:
+            obj = _parse_yaml_file(p)
+            if not isinstance(obj, dict) or not isinstance(obj.get("groups"), list):
+                raise RuntimeError(f"invalid Prometheus rules YAML shape: {p.name}")
+    except Exception as e:
+        print(f"OPS_SMOKE_FAILED: observability assets invalid: {e}")
+        return 60
+
+    # 2) API health + /metrics endpoint smoke
+    try:
+        from http.server import HTTPServer
+        from threading import Thread
+        import urllib.request
+
+        from ieim.api.app import ApiContext, _make_handler
+        from ieim.auth.config import load_auth_config
+        from ieim.auth.oidc import OidcJwtValidator
+        from ieim.auth.rbac import load_rbac_config
+        from ieim.observability.config import load_observability_config
+
+        auth = load_auth_config(path=cfg_path)
+        rbac = load_rbac_config(path=cfg_path)
+        obs = load_observability_config(path=cfg_path)
+
+        out_base_dir = _resolve_repo_path(repo_root, args.out_dir)
+        run_dir = _next_demo_run_dir(base_dir=out_base_dir)
+        hitl_dir = run_dir / "hitl"
+        hitl_dir.mkdir(parents=True, exist_ok=True)
+
+        ctx = ApiContext(
+            repo_root=repo_root,
+            config_path=cfg_path,
+            auth=auth,
+            rbac=rbac,
+            oidc=OidcJwtValidator(config=auth.oidc),
+            hitl_dir=hitl_dir,
+            artifact_roots=(repo_root,),
+            observability=obs,
+        )
+
+        srv = HTTPServer(("127.0.0.1", 0), _make_handler(ctx))
+        host, port = srv.server_address
+        base_url = f"http://{host}:{port}"
+        t = Thread(target=srv.serve_forever, kwargs={"poll_interval": 0.05}, daemon=True)
+        t.start()
+        try:
+            with urllib.request.urlopen(base_url + "/healthz", timeout=3) as resp:
+                if int(resp.status) != 200:
+                    raise RuntimeError(f"/healthz status {resp.status}")
+            with urllib.request.urlopen(base_url + "/metrics", timeout=3) as resp:
+                if int(resp.status) != 200:
+                    raise RuntimeError(f"/metrics status {resp.status}")
+                body = resp.read().decode("utf-8", errors="replace")
+                for name in (
+                    "emails_ingested_total",
+                    "emails_processed_total",
+                    "stage_latency_ms",
+                ):
+                    if name not in body:
+                        raise RuntimeError(f"/metrics missing {name}")
+        finally:
+            srv.shutdown()
+            srv.server_close()
+            t.join(timeout=2)
+    except Exception as e:
+        print(f"OPS_SMOKE_FAILED: api metrics/health check failed: {type(e).__name__}: {e}")
+        return 60
+
+    # 3) Retention enforceability smoke (run retention against ingest simulation output)
+    try:
+        from datetime import datetime, timezone
+
+        ingest_out_dir = run_dir / "ingest"
+        ingest_out_dir.mkdir(parents=True, exist_ok=True)
+        ingest_args = argparse.Namespace(
+            adapter="filesystem",
+            samples=str(_resolve_repo_path(repo_root, args.samples)),
+            out_dir=str(ingest_out_dir),
+            limit=500,
+        )
+        rc = cmd_ingest_simulate(ingest_args)
+        if rc != 0:
+            raise RuntimeError(f"ingest simulate failed: rc={rc}")
+
+        audit_dir = ingest_out_dir / "audit"
+        audit_paths = sorted(audit_dir.glob("**/*.jsonl"))
+        if not audit_paths:
+            raise RuntimeError("no audit logs produced in ingest simulate")
+        before = {p.as_posix(): sha256_prefixed(p.read_bytes()) for p in audit_paths}
+
+        backup_dir = run_dir / "backup"
+        restore_dir = run_dir / "restore"
+        backup_dir.mkdir(parents=True, exist_ok=True)
+        restore_dir.mkdir(parents=True, exist_ok=True)
+
+        def bash_path(p: Path) -> str:
+            try:
+                return p.resolve().relative_to(repo_root.resolve()).as_posix()
+            except Exception:
+                return p.as_posix()
+
+        backup_script = repo_root / "infra" / "backup" / "backup.sh"
+        restore_script = repo_root / "infra" / "backup" / "restore.sh"
+        if not backup_script.exists() or not restore_script.exists():
+            raise RuntimeError("backup scripts missing (expected infra/backup/backup.sh and infra/backup/restore.sh)")
+
+        backup_script_rel = backup_script.relative_to(repo_root).as_posix()
+        restore_script_rel = restore_script.relative_to(repo_root).as_posix()
+
+        backup = subprocess.run(
+            [
+                "bash",
+                backup_script_rel,
+                "--out",
+                bash_path(backup_dir),
+                "--config",
+                str(Path(args.config).as_posix())
+                if not Path(str(args.config)).is_absolute()
+                else bash_path(cfg_path),
+                "--runtime-dir",
+                bash_path(ingest_out_dir),
+            ],
+            cwd=str(repo_root),
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            check=False,
+        )
+        if backup.returncode != 0:
+            raise RuntimeError(f"backup.sh failed: rc={backup.returncode} stdout={backup.stdout} stderr={backup.stderr}")
+
+        restored_cfg = restore_dir / "runtime.yaml"
+        restored_runtime_dir = restore_dir / "runtime"
+        restore = subprocess.run(
+            [
+                "bash",
+                restore_script_rel,
+                "--in",
+                bash_path(backup_dir),
+                "--runtime-dir",
+                bash_path(restored_runtime_dir),
+                "--config-dest",
+                bash_path(restored_cfg),
+            ],
+            cwd=str(repo_root),
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            check=False,
+        )
+        if restore.returncode != 0:
+            raise RuntimeError(f"restore.sh failed: rc={restore.returncode} stdout={restore.stdout} stderr={restore.stderr}")
+
+        restored_audit_dir = restored_runtime_dir / "audit"
+        schema_path = repo_root / "schemas" / "audit_event.schema.json"
+        audit_result = verify_audit_logs(audit_dir=restored_audit_dir, schema_path=schema_path)
+        if audit_result.files_checked == 0 or not audit_result.ok:
+            raise RuntimeError("audit verify failed after restore")
+
+        retention = load_retention_config(path=cfg_path)
+        future_now = datetime(2100, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
+        _ = run_raw_retention(
+            base_dir=ingest_out_dir,
+            derived_base_dir=None,
+            normalized_dir=ingest_out_dir / "emails",
+            attachments_dir=ingest_out_dir / "attachments",
+            raw_days=retention.raw_days,
+            now=future_now,
+            dry_run=False,
+            report_path=ingest_out_dir / "reports" / "retention_report.json",
+        )
+
+        # Audit is append-only and not subject to raw retention deletion.
+        after = {p.as_posix(): sha256_prefixed(p.read_bytes()) for p in audit_paths}
+        if before != after:
+            raise RuntimeError("audit logs changed after retention apply")
+    except Exception as e:
+        print(f"OPS_SMOKE_FAILED: retention smoke failed: {type(e).__name__}: {e}")
+        return 60
+
+    keep = bool(getattr(args, "keep_artifacts", False))
+    if not keep:
+        try:
+            import shutil
+
+            shutil.rmtree(run_dir)
+        except Exception:
+            pass
+
+    print(f"OPS_SMOKE_OK: out_dir={run_dir.as_posix()} kept={keep}")
+    return 0
+
+
 def cmd_loadtest_run(args: argparse.Namespace) -> int:
     repo_root = Path(__file__).resolve().parent
 
@@ -1063,6 +1298,24 @@ def main(argv: list[str] | None = None) -> int:
         help="Optional path to write a JSON report (repo-relative unless absolute).",
     )
     retention_run.set_defaults(func=cmd_retention_run)
+
+    ops = sub.add_parser("ops")
+    ops_sub = ops.add_subparsers(dest="ops_command", required=True)
+
+    ops_smoke = ops_sub.add_parser("smoke")
+    ops_smoke.add_argument("--config", default="configs/dev.yaml", help="Config file (repo-relative).")
+    ops_smoke.add_argument("--samples", default="data/samples", help="Sample corpus base directory (repo-relative).")
+    ops_smoke.add_argument(
+        "--out-dir",
+        default="out/ops_smoke",
+        help="Output base directory for smoke artifacts (repo-relative unless absolute).",
+    )
+    ops_smoke.add_argument(
+        "--keep-artifacts",
+        action="store_true",
+        help="Keep generated artifacts under --out-dir (default is to clean up on success).",
+    )
+    ops_smoke.set_defaults(func=cmd_ops_smoke)
 
     loadtest = sub.add_parser("loadtest")
     loadtest_sub = loadtest.add_subparsers(dest="loadtest_command", required=True)

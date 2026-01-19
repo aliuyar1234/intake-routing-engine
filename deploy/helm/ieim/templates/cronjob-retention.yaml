@@ -64,5 +64,10 @@ spec:
             - name: tmp
               emptyDir: {}
             - name: work
+              {{- if .Values.persistence.enabled }}
+              persistentVolumeClaim:
+                claimName: {{ include "ieim.workClaimName" . }}
+              {{- else }}
               emptyDir: {}
+              {{- end }}
 {{- end }}

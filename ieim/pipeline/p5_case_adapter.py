@@ -10,6 +10,7 @@ from typing import Optional
 from ieim.audit.file_audit_log import ArtifactRef, FileAuditLogger, build_audit_event
 from ieim.case_adapter.adapter import CaseAdapter
 from ieim.case_adapter.stage import CaseStage
+from ieim.observability import metrics as prom_metrics
 from ieim.observability.file_observability_log import FileObservabilityLogger, build_observability_event
 from ieim.raw_store import sha256_prefixed
 
@@ -211,6 +212,7 @@ class CaseAdapterRunner:
                         fields={"case_id": case_id or "", "blocked": blocked},
                     )
                 )
+            prom_metrics.observe_stage(stage="CASE", duration_ms=dur_ms, status=status)
 
             if self.audit_logger is not None:
                 created_at_dt = _parse_rfc3339(str(nm["ingested_at"]))

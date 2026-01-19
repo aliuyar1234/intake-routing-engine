@@ -1,0 +1,84 @@
+{
+  "uid": "ieim-overview",
+  "title": "IEIM Overview",
+  "tags": ["ieim"],
+  "timezone": "utc",
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "30s",
+  "time": { "from": "now-6h", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "stage",
+        "type": "query",
+        "datasource": "${DS_PROMETHEUS}",
+        "query": "label_values(stage_latency_ms_bucket, stage)",
+        "refresh": 1,
+        "includeAll": true,
+        "multi": true,
+        "allValue": ".*"
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "Emails ingested / min",
+      "datasource": "${DS_PROMETHEUS}",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [
+        { "expr": "rate(emails_ingested_total[5m]) * 60", "refId": "A" }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Emails processed / min",
+      "datasource": "${DS_PROMETHEUS}",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "targets": [
+        { "expr": "rate(emails_processed_total[5m]) * 60", "refId": "A" }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Stage p95 latency (ms)",
+      "datasource": "${DS_PROMETHEUS}",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 8 },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(stage_latency_ms_bucket{stage=~\"$stage\"}[5m])) by (le, stage))",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "HITL rate (%)",
+      "datasource": "${DS_PROMETHEUS}",
+      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 18 },
+      "targets": [{ "expr": "hitl_rate_percent", "refId": "A" }]
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Mis-association rate",
+      "datasource": "${DS_PROMETHEUS}",
+      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 18 },
+      "targets": [{ "expr": "mis_association_rate", "refId": "A" }]
+    },
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "Misroute rate",
+      "datasource": "${DS_PROMETHEUS}",
+      "gridPos": { "h": 6, "w": 8, "x": 16, "y": 18 },
+      "targets": [{ "expr": "misroute_rate", "refId": "A" }]
+    }
+  ]
+}
+

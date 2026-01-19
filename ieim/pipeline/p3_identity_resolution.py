@@ -12,6 +12,7 @@ from ieim.identity.adapters import CRMAdapter, ClaimsAdapter, PolicyAdapter
 from ieim.identity.config import load_identity_config
 from ieim.identity.config_select import select_config_path_for_message
 from ieim.identity.resolver import IdentityResolver
+from ieim.observability import metrics as prom_metrics
 from ieim.observability.file_observability_log import FileObservabilityLogger, build_observability_event
 from ieim.raw_store import sha256_prefixed
 
@@ -112,6 +113,7 @@ class IdentityResolutionRunner:
                         fields={"identity_status": str(result.get("status") or "")},
                     )
                 )
+            prom_metrics.observe_stage(stage="IDENTITY", duration_ms=dur_ms, status="OK")
 
             if self.audit_logger is not None:
                 created_at_dt = _parse_rfc3339(str(nm["ingested_at"]))

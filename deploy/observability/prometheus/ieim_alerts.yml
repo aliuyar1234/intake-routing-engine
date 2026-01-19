@@ -1,0 +1,41 @@
+groups:
+  - name: ieim.rules
+    rules:
+      - alert: IEIMIngestFailureRateHigh
+        expr: >
+          (
+            sum(rate(stage_events_total{stage="INGEST",status="FAILED"}[10m]))
+            /
+            clamp_min(sum(rate(stage_events_total{stage="INGEST"}[10m])), 1)
+          ) > 0.005
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "IEIM ingest failure rate > 0.5%"
+          description: "Ingest stage is producing failures above 0.5% over 10 minutes."
+
+      - alert: IEIMStageLatencyP95High
+        expr: >
+          max(
+            histogram_quantile(
+              0.95,
+              sum(rate(stage_latency_ms_bucket[10m])) by (le, stage)
+            )
+          ) > 30000
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "IEIM stage p95 latency > 30s"
+          description: "At least one pipeline stage has p95 latency above 30 seconds over 10 minutes."
+
+      - alert: IEIMHITLRateHigh
+        expr: hitl_rate_percent > 60
+        for: 30m
+        labels:
+          severity: info
+        annotations:
+          summary: "IEIM HITL rate high"
+          description: "HITL share is above 60% for 30 minutes. This may indicate upstream identity/classification uncertainty."
+

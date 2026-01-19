@@ -34,3 +34,11 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- default "default" .Values.serviceAccount.name -}}
 {{- end -}}
 {{- end -}}
+
+{{- define "ieim.workClaimName" -}}
+{{- if .Values.persistence.existingClaim -}}
+{{- .Values.persistence.existingClaim -}}
+{{- else -}}
+{{- printf "%s-work" (include "ieim.fullname" .) -}}
+{{- end -}}
+{{- end -}}

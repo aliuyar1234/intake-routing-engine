@@ -16,10 +16,9 @@ Thumbs.db
 .vscode/
 
 # Runtime outputs (local demos)
-audit/
-observability/
-hitl/
-raw_store/
-state/
-out/
-
+/audit/
+/observability/
+/hitl/
+/raw_store/
+/state/
+/out/

@@ -62,9 +62,18 @@ spec:
               readOnly: true
             - name: tmp
               mountPath: /tmp
+            - name: work
+              mountPath: /var/lib/ieim
       volumes:
         - name: config
           configMap:
             name: {{ include "ieim.fullname" . }}-config
         - name: tmp
           emptyDir: {}
+        - name: work
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "ieim.workClaimName" . }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}

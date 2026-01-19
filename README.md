@@ -81,6 +81,15 @@ python ieimctl.py pack verify
 
 - **Incident toggles** (force review, disable LLM, block case creation for selected risk flags): `configs/prod.yaml` and `runbooks/incident_response.md`
 - **Retention job** (file-backed reference): `python ieimctl.py retention run --help` and `runbooks/retention_jobs.md`
+- **Operability smoke** (metrics + dashboards/rules validation + backup/restore + retention safety): `python ieimctl.py ops smoke --config configs/dev.yaml`
+  - Use `--keep-artifacts` to keep the generated runtime artifacts on disk (default is cleanup on success).
+- **Metrics** (Prometheus):
+  - API: `GET /metrics`
+  - Worker: `IEIM_WORKER_METRICS_PORT` (default `9100`)
+  - Scheduler: `IEIM_SCHEDULER_METRICS_PORT` (default `9101`)
+  - Dashboards: `deploy/observability/grafana/`
+  - Alert rules: `deploy/observability/prometheus/`
+- **Backup/restore** (file-backed + optional Postgres/S3): `infra/backup/backup.sh`, `infra/backup/restore.sh`, and `docs/BACKUP_RESTORE.md`
 - **Load test harness** (file-backed sample corpus): `python ieimctl.py loadtest run --help`
   - Example report: `reports/load_test_report.json`
 

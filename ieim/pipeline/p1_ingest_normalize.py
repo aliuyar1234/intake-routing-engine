@@ -13,6 +13,7 @@ from ieim.attachments.stage import AttachmentStage
 from ieim.ingest.adapter import MailIngestAdapter
 from ieim.ingest.cursor_store import CursorState, read_cursor, write_cursor
 from ieim.normalize.normalized_message import build_normalized_message
+from ieim.observability import metrics as prom_metrics
 from ieim.observability.file_observability_log import FileObservabilityLogger, build_observability_event
 from ieim.raw_store import FileRawStore, sha256_prefixed
 
@@ -107,6 +108,7 @@ class IngestNormalizeRunner:
                 )
                 att_ms = int((time.perf_counter() - t_att0) * 1000)
                 attachment_ids = [p.attachment_id for p in processed_attachments]
+                prom_metrics.observe_stage(stage="ATTACHMENTS", duration_ms=att_ms, status="OK")
                 if self.obs_logger is not None:
                     self.obs_logger.append(
                         build_observability_event(
@@ -121,6 +123,8 @@ class IngestNormalizeRunner:
                         )
                     )
 
+            prom_metrics.inc_ingested(count=1)
+            prom_metrics.observe_stage(stage="INGEST", duration_ms=ingest_ms, status="OK")
             if self.obs_logger is not None:
                 self.obs_logger.append(
                     build_observability_event(
@@ -175,6 +179,7 @@ class IngestNormalizeRunner:
                         fields={"normalized_bytes": len(out_bytes)},
                     )
                 )
+            prom_metrics.observe_stage(stage="NORMALIZE", duration_ms=norm_ms, status="OK")
 
             if self.audit_logger is not None:
                 raw_ref = ArtifactRef(schema_id="RAW_MIME", uri=put.uri, sha256=put.sha256)

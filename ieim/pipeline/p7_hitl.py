@@ -9,6 +9,7 @@ from typing import Optional
 
 from ieim.audit.file_audit_log import ArtifactRef, FileAuditLogger, build_audit_event
 from ieim.hitl.review_store import FileReviewStore, build_review_item
+from ieim.observability import metrics as prom_metrics
 from ieim.raw_store import sha256_prefixed
 
 
@@ -79,6 +80,8 @@ class HitlReviewItemsRunner:
             )
             store_path = store.write(item=item)
             dur_ms = int((time.perf_counter() - t0) * 1000)
+            prom_metrics.observe_stage(stage="HITL", duration_ms=dur_ms, status="OK")
+            prom_metrics.inc_hitl(count=1)
 
             if self.audit_logger is not None:
                 input_ref = ArtifactRef(

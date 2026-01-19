@@ -186,12 +186,12 @@ Gate G-014 (PASSED):
 ## P14 - Observability, backups, retention, and operator experience
 
 Tasks:
-- T-060 Metrics and dashboards (OPEN)
-- T-061 OpenTelemetry tracing (conditional) (OPEN)
-- T-062 Backup and restore procedures (OPEN)
-- T-063 Retention enforcement in production (OPEN)
+- T-060 Metrics and dashboards (DONE)
+- T-061 OpenTelemetry tracing (conditional) (DONE)
+- T-062 Backup and restore procedures (DONE)
+- T-063 Retention enforcement in production (DONE)
 
-Gate G-015 (NOT STARTED):
+Gate G-015 (PASSED):
 - Operability gate (monitoring + backup/restore + retention enforceable)
 
 ## P15 - Release engineering, SBOM, signing, and upgrade path

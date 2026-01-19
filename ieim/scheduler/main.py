@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import argparse
+import os
 import time
 from pathlib import Path
 
+from ieim.observability.config import load_observability_config
+from ieim.observability import tracing
 from ieim.runtime.config import validate_config_file
 from ieim.runtime.paths import discover_repo_root
 
@@ -23,10 +26,23 @@ def main(argv: list[str] | None = None) -> int:
         print("IEIM_SCHEDULER_DRY_RUN_OK")
         return 0
 
+    obs = load_observability_config(path=cfg_path)
+    tracing.init_tracing(enabled=obs.tracing_enabled, service_name="ieim-scheduler")
+    if obs.metrics_enabled:
+        try:
+            from prometheus_client import start_http_server
+
+            host = os.environ.get("IEIM_METRICS_HOST", "0.0.0.0")
+            port = int(os.environ.get("IEIM_SCHEDULER_METRICS_PORT", "9101"))
+            start_http_server(port, addr=host)
+            print(f"IEIM_SCHEDULER_METRICS_OK: http://{host}:{port}/metrics")
+        except Exception as e:
+            print(f"IEIM_SCHEDULER_METRICS_FAILED: {e}")
+            return 60
+
     while True:
         time.sleep(15)
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

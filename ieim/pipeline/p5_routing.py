@@ -10,6 +10,7 @@ from typing import Optional
 from ieim.audit.file_audit_log import ArtifactRef, FileAuditLogger, build_audit_event
 from ieim.config import IEIMConfig, load_config
 from ieim.identity.config_select import select_config_path_for_message
+from ieim.observability import metrics as prom_metrics
 from ieim.observability.file_observability_log import FileObservabilityLogger, build_observability_event
 from ieim.raw_store import sha256_prefixed
 from ieim.route.evaluator import evaluate_routing
@@ -93,6 +94,8 @@ class RoutingRunner:
                         fields={"queue_id": str(result.decision.get("queue_id") or "")},
                     )
                 )
+            prom_metrics.observe_stage(stage="ROUTE", duration_ms=dur_ms, status="OK")
+            prom_metrics.inc_processed(count=1)
 
             if self.audit_logger is not None:
                 created_at_dt = _parse_rfc3339(str(nm["ingested_at"]))

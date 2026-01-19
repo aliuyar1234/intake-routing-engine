@@ -277,6 +277,7 @@ If product line is PROD_UNKNOWN and intent implies claims or policy service, rou
   - `ieimctl hitl submit-correction`
   - `ieimctl retention run`
   - `ieimctl loadtest run`
+  - `ieimctl ops smoke`
 
 ## 8) Canonical repository paths
 

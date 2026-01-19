@@ -20,6 +20,7 @@ from ieim.llm.mapping import (
     merge_llm_extraction_into_result,
 )
 from ieim.llm.redaction import redact_preserve_length
+from ieim.observability import metrics as prom_metrics
 from ieim.observability.file_observability_log import FileObservabilityLogger, build_observability_event
 from ieim.raw_store import sha256_prefixed
 
@@ -303,6 +304,8 @@ class ClassifyExtractRunner:
                         fields={"entity_count": len(extraction.get("entities") or [])},
                     )
                 )
+            prom_metrics.observe_stage(stage="CLASSIFY", duration_ms=cls_ms, status="OK")
+            prom_metrics.observe_stage(stage="EXTRACT", duration_ms=ex_ms, status="OK")
 
             if self.audit_logger is not None:
                 created_at_dt = _parse_rfc3339(str(nm["ingested_at"]))
