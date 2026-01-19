@@ -4,7 +4,7 @@
     "ATTACH_ORIGINAL_EMAIL"
   ],
   "created_at": "2026-01-17T08:00:09Z",
-  "decision_hash": "sha256:4f8bffd5325885815a11195d548bead8adadf76c5e914831a84b47c6eeb5db12",
+  "decision_hash": "sha256:46b346efddb7a617a5ede81464630277d7b7a3f13b184af8c89692b58b9a1ab0",
   "fail_closed": false,
   "fail_closed_reason": null,
   "message_id": "83a065a2-733b-5960-b63d-0d3360f5923e",

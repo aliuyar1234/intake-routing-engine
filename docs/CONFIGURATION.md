@@ -22,8 +22,10 @@ Common fields you will typically change:
 
 - `auth.oidc`: OIDC issuer and JWT validation (plus optional direct-grant login for starter/dev)
 - `incident`: operational toggles (force review, disable LLM, block case creation for selected risk flags)
+- `pipeline`: mode selection (`BASELINE` or `LLM_FIRST`)
 - `identity`: scoring thresholds and signal weights
 - `classification.llm`: LLM enablement and provider settings (disabled by default)
+- `classification.llm.thresholds`: confidence gates for LLM-first classification and extraction
 - `routing`: routing ruleset path and version
 - `retention`: retention durations (raw, normalized, audit)
 - `rbac`: role mappings for permissions like `can_view_raw`

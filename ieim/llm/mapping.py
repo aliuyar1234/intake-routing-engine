@@ -120,6 +120,23 @@ def _pick_primary_intent(*, intents: list[dict[str, Any]]) -> dict[str, Any]:
     return sorted(intents, key=lambda x: prio.get(str(x.get("label") or ""), 10_000))[0]
 
 
+def _merge_risk_flags(
+    *, deterministic: list[dict[str, Any]], llm_flags: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
+    merged: dict[str, dict[str, Any]] = {}
+    for rf in deterministic:
+        if isinstance(rf, dict):
+            label = str(rf.get("label") or "")
+            if label:
+                merged[label] = rf
+    for rf in llm_flags:
+        if isinstance(rf, dict):
+            label = str(rf.get("label") or "")
+            if label and label not in merged:
+                merged[label] = rf
+    return list(merged.values())
+
+
 def _decision_hash_for_classification(
     *,
     config: IEIMConfig,
@@ -242,13 +259,21 @@ def build_classification_result_from_llm(
         allowed_labels=sets["URG"],
         path="llm.urgency",
     )
+    risk_flags_llm = _map_labeled_items(
+        items=_require_list(llm_output.get("risk_flags"), path="llm.risk_flags"),
+        subject_redacted=subject_redacted,
+        body_redacted=body_redacted,
+        allowed_labels=sets["RISK"],
+        path="llm.risk_flags",
+    )
 
     primary = _pick_primary_intent(intents=intents)
 
-    risk_flags: list[dict] = []
+    deterministic_flags: list[dict] = []
     for r in deterministic_risk_flags:
         if isinstance(r, dict):
-            risk_flags.append(r)
+            deterministic_flags.append(r)
+    risk_flags = _merge_risk_flags(deterministic=deterministic_flags, llm_flags=risk_flags_llm)
 
     decision_hash_value = _decision_hash_for_classification(
         config=config,
@@ -362,6 +387,14 @@ def merge_llm_extraction_into_result(
         if not snippets:
             continue
 
+        confidence = float(it.get("confidence") or 0.0)
+        thresholds = config.classification.llm.thresholds.extraction
+        min_conf = thresholds.other_entity_min
+        if entity_type in set(thresholds.high_value_entity_types):
+            min_conf = thresholds.high_value_entity_min
+        if confidence < min_conf:
+            continue
+
         value: Optional[str] = None
         for s in snippets:
             s = _require_non_empty_str(s, path=f"llm.entities[{idx}].evidence_snippets[*]")
@@ -397,7 +430,7 @@ def merge_llm_extraction_into_result(
                 "value_redacted": value_redacted,
                 "value_sha256": value_sha,
                 "store_mode": store_mode,
-                "confidence": float(it.get("confidence") or 0.0),
+                "confidence": confidence,
                 "provenance": provenance,
             }
         )

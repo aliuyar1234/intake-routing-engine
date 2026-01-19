@@ -1,4 +1,4 @@
-# Intake Routing Engine v1.0.4
+# Intake Routing Engine v1.0.5
 
 Intake Routing Engine is an **open-source, self-hosted email intake and routing system**. It ingests inbound emails (with attachments), extracts structured facts, applies deterministic routing, and creates auditable downstream actions (case/ticket, drafts, or human review) with an immutable audit trail.
 
@@ -108,7 +108,10 @@ Details and verification: `docs/RELEASES.md`
 
 ## LLM usage (policy-gated)
 
-LLM calls are optional, are gated to preserve safety and reproducibility, and are disabled by default.
+LLM-first mode is supported and enabled by default in the provided configs. LLM calls remain gated to preserve
+safety and reproducibility: determinism mode disables LLM, and the system fails closed to review when an LLM
+output is invalid or below confidence thresholds. The default local provider is Ollama and can be switched to
+OpenAI by changing `classification.llm.provider` in the config.
 
 Details: `spec/05_CLASSIFICATION_AND_LLM.md`
 

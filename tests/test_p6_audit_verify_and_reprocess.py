@@ -101,6 +101,8 @@ class TestP6AuditVerifyAndReprocess(unittest.TestCase):
                     "data/samples/attachments",
                     "--history-dir",
                     "data/samples/gold",
+                    "--config",
+                    "configs/test_baseline.yaml",
                     "--crm-mapping",
                     str(crm_path),
                     "--out-dir",
@@ -128,4 +130,3 @@ class TestP6AuditVerifyAndReprocess(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

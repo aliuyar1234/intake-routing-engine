@@ -234,6 +234,10 @@ def cmd_reprocess(args: argparse.Namespace) -> int:
     if args.history_dir is not None:
         history_dir = _resolve_repo_path(repo_root, args.history_dir)
 
+    config_path = None
+    if args.config is not None:
+        config_path = _resolve_repo_path(repo_root, args.config)
+
     runner = ReprocessRunner(
         repo_root=repo_root,
         normalized_dir=_resolve_repo_path(repo_root, args.normalized_dir),
@@ -242,6 +246,7 @@ def cmd_reprocess(args: argparse.Namespace) -> int:
         message_id=args.message_id,
         crm_mapping=crm_mapping,
         history_dir=history_dir,
+        config_path_override=config_path,
     )
 
     report = runner.run()
@@ -1347,6 +1352,7 @@ def main(argv: list[str] | None = None) -> int:
     reprocess.add_argument("--normalized-dir", default="data/samples/emails")
     reprocess.add_argument("--attachments-dir", default="data/samples/attachments")
     reprocess.add_argument("--out-dir", required=True)
+    reprocess.add_argument("--config", default=None)
     reprocess.add_argument(
         "--history-dir",
         default=None,

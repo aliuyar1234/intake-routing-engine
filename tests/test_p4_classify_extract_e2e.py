@@ -44,6 +44,7 @@ class TestP4ClassifyExtractE2E(unittest.TestCase):
                 classification_out_dir=base / "classification",
                 extraction_out_dir=base / "extraction",
                 audit_logger=audit_logger,
+                config_path_override=root / "configs" / "test_baseline.yaml",
             )
 
             produced = runner.run()
@@ -87,4 +88,3 @@ class TestP4ClassifyExtractE2E(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

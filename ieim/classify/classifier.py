@@ -258,6 +258,28 @@ class DeterministicClassifier:
                         "evidence": [span] if span is not None else [_first_word_span(source="SUBJECT_C14N", text=subject_c14n)],
                     }
                 )
+            elif "unfall" in body_c14n or "unfall" in subject_c14n:
+                span = _find_span(source="BODY_C14N", text=body_c14n, needle="unfall") or _find_span(
+                    source="SUBJECT_C14N", text=subject_c14n, needle="unfall"
+                )
+                intents.append(
+                    {
+                        "label": "INTENT_CLAIM_NEW",
+                        "confidence": 0.9,
+                        "evidence": [span] if span is not None else [_first_20_chars_span(source="BODY_C14N", text=body_c14n)],
+                    }
+                )
+            elif "schaden" in body_c14n and ("versichert" in body_c14n or "anzeige" in body_c14n):
+                span = _find_span(source="BODY_C14N", text=body_c14n, needle="schaden") or _first_20_chars_span(
+                    source="BODY_C14N", text=body_c14n
+                )
+                intents.append(
+                    {
+                        "label": "INTENT_CLAIM_NEW",
+                        "confidence": 0.85,
+                        "evidence": [span],
+                    }
+                )
 
         if not intents and "rückzahlung" in body_c14n:
             span = _find_span(source="BODY_C14N", text=body_c14n, needle="rückzahlung")
@@ -521,4 +543,3 @@ class DeterministicClassifier:
         }
 
         return ClassificationResult(result=out, rules_ref=rules_ref)
-

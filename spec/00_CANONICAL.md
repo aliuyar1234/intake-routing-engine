@@ -1,7 +1,7 @@
 # IEIM — Canonical Contracts
 
 **File:** `spec/00_CANONICAL.md`  
-**Canonical version (SemVer):** `1.0.4`
+**Canonical version (SemVer):** `1.0.5`
 
 This file is the **only** authoritative location for:
 - Canonical IDs and enums (labels, queues, SLAs, stages, module IDs)
@@ -19,7 +19,7 @@ This file is the **only** authoritative location for:
 
 - SYSTEM_ID: `IEIM`
 - PACK_ID: `intake-routing-engine`
-- CANONICAL_SPEC_SEMVER: `1.0.4`
+- CANONICAL_SPEC_SEMVER: `1.0.5`
 - HASH_ALGO_PRIMARY: `SHA-256`
 - JSON_CANONICALIZATION: `RFC8785` (JSON Canonicalization Scheme)
 
@@ -229,6 +229,11 @@ Intent labels are multi-label. A single email may contain multiple intents.
 - MOD_OBSERVABILITY
 - MOD_SECURITY
 - MOD_RULES_REGISTRY
+
+### 5.16 Pipeline modes (pipeline.mode)
+
+- PIPELINE_MODE_BASELINE: `BASELINE`
+- PIPELINE_MODE_LLM_FIRST: `LLM_FIRST`
 
 ## 6) Multi-label rules and priority logic
 

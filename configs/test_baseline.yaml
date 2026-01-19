@@ -20,18 +20,18 @@ auth:
       client_secret: null
 
 runtime:
-  determinism_mode: false
+  determinism_mode: true
   supported_languages:
     - de
     - en
 
 pipeline:
-  mode: LLM_FIRST
+  mode: BASELINE
 
 incident:
   force_review: false
   force_review_queue_id: "QUEUE_INTAKE_REVIEW_GENERAL"
-  disable_llm: false
+  disable_llm: true
   block_case_create_risk_flags_any: []
 
 identity:
@@ -60,17 +60,17 @@ classification:
   min_confidence_for_auto: 0.75
   rules_version: "1.0.0"
   llm:
-    enabled: true
-    provider: "ollama"
-    model_name: "qwen_local_test:latest"
-    model_version: "qwen_local_test:latest"
+    enabled: false
+    provider: "disabled"
+    model_name: "disabled"
+    model_version: "disabled"
     prompt_versions:
       classify: "1.0.0"
       extract: "1.0.0"
     token_budgets:
       classify: 700
       extract: 900
-    max_calls_per_day: 200
+    max_calls_per_day: 0
     thresholds:
       classification:
         primary_intent_min: 0.72

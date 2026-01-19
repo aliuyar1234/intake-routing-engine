@@ -41,13 +41,13 @@ helm install ieim deploy/helm/ieim -f deploy/helm/ieim/production-values.yaml
 Download the packaged chart:
 
 ```bash
-gh release download v1.0.4 -p "ieim-*.tgz"
+gh release download v1.0.5 -p "ieim-*.tgz"
 ```
 
 Install the chart and point image repositories to GHCR:
 
 ```bash
-VERSION="1.0.4"
+VERSION="1.0.5"
 OWNER="<github_owner>"
 
 helm install ieim "ieim-${VERSION}.tgz" \

@@ -14,6 +14,13 @@ Canonical label IDs are defined in `spec/00_CANONICAL.md`.
 2. Lightweight deterministic model (calibrated probabilities)
 3. LLM (optional, gated)
 
+## Pipeline modes
+
+- BASELINE (default): order above is applied as-is.
+- LLM_FIRST: LLM is the primary source for classification/extraction when enabled; deterministic rules still
+  run for risk flags and disagreement gates. If LLM is unavailable or fails validation, the system fails
+  closed to review.
+
 ## Deterministic rules
 
 Rules should be high precision and produce evidence. Examples of rule families:

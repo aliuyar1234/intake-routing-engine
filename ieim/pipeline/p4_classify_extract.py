@@ -57,6 +57,38 @@ def _collect_evidence(*, classification: dict) -> list[dict]:
     return out
 
 
+def _llm_classification_meets_thresholds(*, cfg: IEIMConfig, classification: dict) -> tuple[bool, str]:
+    thresholds = cfg.classification.llm.thresholds.classification
+    primary = classification.get("primary_intent") or {}
+    if float(primary.get("confidence") or 0.0) < thresholds.primary_intent_min:
+        return False, "PRIMARY_INTENT_BELOW_THRESHOLD"
+    product = classification.get("product_line") or {}
+    if float(product.get("confidence") or 0.0) < thresholds.product_line_min:
+        return False, "PRODUCT_LINE_BELOW_THRESHOLD"
+    urgency = classification.get("urgency") or {}
+    if float(urgency.get("confidence") or 0.0) < thresholds.urgency_min:
+        return False, "URGENCY_BELOW_THRESHOLD"
+    for rf in classification.get("risk_flags") or []:
+        if float(rf.get("confidence") or 0.0) < thresholds.risk_flag_min:
+            return False, "RISK_FLAG_BELOW_THRESHOLD"
+    return True, "OK"
+
+
+def _llm_disagrees_with_deterministic(
+    *, cfg: IEIMConfig, deterministic_classification: dict, llm_classification: dict
+) -> bool:
+    det_primary = deterministic_classification.get("primary_intent") or {}
+    det_label = str(det_primary.get("label") or "")
+    det_conf = float(det_primary.get("confidence") or 0.0)
+    llm_primary = llm_classification.get("primary_intent") or {}
+    llm_label = str(llm_primary.get("label") or "")
+    if not det_label or not llm_label:
+        return False
+    if det_conf >= float(cfg.classification.min_confidence_for_auto) and det_label != llm_label:
+        return True
+    return False
+
+
 def _fail_closed_review_classification(*, cfg: IEIMConfig, nm: dict, deterministic_risk_flags: list[dict]) -> dict:
     from ieim.classify.classifier import _classification_schema_id_and_version
     from ieim.determinism.decision_hash import decision_hash
@@ -195,7 +227,20 @@ class ClassifyExtractRunner:
             body_redacted = redact_preserve_length(str(nm.get("body_text_c14n") or ""))
 
             gate_cls = should_call_llm_classify(config=cfg, deterministic_classification=classification_result)
-            if gate_cls.allowed:
+            if cfg.pipeline.mode == "LLM_FIRST" and not gate_cls.allowed:
+                det_primary = cls.result.get("primary_intent") or {}
+                det_conf = float(det_primary.get("confidence") or 0.0)
+                if det_conf >= float(cfg.classification.min_confidence_for_auto) or (cls.result.get("risk_flags") or []):
+                    classification_result = cls.result
+                    classify_llm_used = False
+                else:
+                    classification_result = _fail_closed_review_classification(
+                        cfg=cfg,
+                        nm=nm,
+                        deterministic_risk_flags=list(cls.result.get("risk_flags") or []),
+                    )
+                    classify_llm_used = False
+            elif gate_cls.allowed:
                 try:
                     llm = LLMAdapter(repo_root=self.repo_root, config=cfg)
                     llm_resp = llm.classify(
@@ -214,13 +259,42 @@ class ClassifyExtractRunner:
                     body_redacted = mapped.body_redacted
                     classify_model_info = llm_resp.model_info
                     classify_llm_used = True
+                    if cfg.pipeline.mode == "LLM_FIRST":
+                        ok, _reason = _llm_classification_meets_thresholds(
+                            cfg=cfg, classification=classification_result
+                        )
+                        if not ok or _llm_disagrees_with_deterministic(
+                            cfg=cfg,
+                            deterministic_classification=cls.result,
+                            llm_classification=classification_result,
+                        ):
+                            classification_result = _fail_closed_review_classification(
+                                cfg=cfg,
+                                nm=nm,
+                                deterministic_risk_flags=list(cls.result.get("risk_flags") or []),
+                            )
+                            classify_llm_used = False
                 except (LLMMappingError, Exception):
-                    classification_result = _fail_closed_review_classification(
-                        cfg=cfg,
-                        nm=nm,
-                        deterministic_risk_flags=list(cls.result.get("risk_flags") or []),
-                    )
-                    classify_llm_used = False
+                    if cfg.pipeline.mode == "LLM_FIRST":
+                        det_primary = cls.result.get("primary_intent") or {}
+                        det_conf = float(det_primary.get("confidence") or 0.0)
+                        if det_conf >= float(cfg.classification.min_confidence_for_auto) or (cls.result.get("risk_flags") or []):
+                            classification_result = cls.result
+                            classify_llm_used = False
+                        else:
+                            classification_result = _fail_closed_review_classification(
+                                cfg=cfg,
+                                nm=nm,
+                                deterministic_risk_flags=list(cls.result.get("risk_flags") or []),
+                            )
+                            classify_llm_used = False
+                    else:
+                        classification_result = _fail_closed_review_classification(
+                            cfg=cfg,
+                            nm=nm,
+                            deterministic_risk_flags=list(cls.result.get("risk_flags") or []),
+                        )
+                        classify_llm_used = False
 
             t_ex0 = time.perf_counter()
             extraction = DeterministicExtractor(config=cfg).extract(
@@ -229,9 +303,14 @@ class ClassifyExtractRunner:
             ex_ms = int((time.perf_counter() - t_ex0) * 1000)
 
             extract_model_info = None
-            gate_ex = should_call_llm_extract(
-                classify_llm_used=classify_llm_used, deterministic_extraction=extraction
-            )
+            if cfg.pipeline.mode == "LLM_FIRST" and classify_llm_used:
+                gate_ex = should_call_llm_extract(
+                    classify_llm_used=True, deterministic_extraction={"entities": []}
+                )
+            else:
+                gate_ex = should_call_llm_extract(
+                    classify_llm_used=classify_llm_used, deterministic_extraction=extraction
+                )
             if gate_ex.allowed:
                 try:
                     llm = LLMAdapter(repo_root=self.repo_root, config=cfg)

@@ -32,6 +32,7 @@ def main() -> int:
 
     # P3 gold (identity)
     crm = InMemoryCRMAdapter({"kunde1@example.test": ["45-1234567"]})
+    baseline_cfg = repo_root / "configs" / "test_baseline.yaml"
     with tempfile.TemporaryDirectory() as td:
         base = Path(td)
         identity_runner = IdentityResolutionRunner(
@@ -45,6 +46,7 @@ def main() -> int:
             crm_adapter=crm,
             audit_logger=None,
             obs_logger=None,
+            config_path_override=baseline_cfg,
         )
         identity_results = identity_runner.run()
         for res in identity_results:
@@ -61,6 +63,7 @@ def main() -> int:
             extraction_out_dir=base / "extraction",
             audit_logger=None,
             obs_logger=None,
+            config_path_override=baseline_cfg,
         )
         produced = cls_runner.run()
         for cls, ex in produced:
@@ -78,6 +81,7 @@ def main() -> int:
             routing_out_dir=base / "routing",
             audit_logger=None,
             obs_logger=None,
+            config_path_override=baseline_cfg,
         )
         routing_results = routing_runner.run()
         for decision in routing_results:

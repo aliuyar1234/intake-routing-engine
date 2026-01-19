@@ -4,6 +4,12 @@ All notable changes to Intake Routing Engine (IEIM) are documented here.
 
 This project follows Semantic Versioning.
 
+## 1.0.5
+
+- Added LLM-first pipeline mode with explicit confidence thresholds and deterministic fail-closed gates.
+- Added pipeline mode configuration and LLM threshold configuration to runtime configs.
+- Default pipeline mode in provided configs and Helm values is now LLM_FIRST (LLM still disabled until configured).
+
 ## 1.0.4
 
 - Renamed the GitHub repository to `intake-routing-engine` and updated internal identifiers and docs.

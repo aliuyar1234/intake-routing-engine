@@ -36,6 +36,38 @@ def _truncate_text(value: str, *, max_chars: int) -> str:
     return value[:max_chars]
 
 
+def _strip_code_fences(text: str) -> str:
+    cleaned = text.strip()
+    if not cleaned.startswith("```"):
+        return cleaned
+    lines = cleaned.splitlines()
+    if not lines:
+        return cleaned
+    # Drop the opening fence line (``` or ```json)
+    cleaned = "\n".join(lines[1:])
+    if "```" in cleaned:
+        cleaned = cleaned.rsplit("```", 1)[0]
+    return cleaned.strip()
+
+
+def _parse_json_response(content: str) -> dict[str, Any]:
+    try:
+        parsed = json.loads(content)
+    except Exception:
+        cleaned = _strip_code_fences(content)
+        try:
+            parsed = json.loads(cleaned)
+        except Exception:
+            start = cleaned.find("{")
+            end = cleaned.rfind("}")
+            if start == -1 or end == -1 or end <= start:
+                raise
+            parsed = json.loads(cleaned[start : end + 1])
+    if not isinstance(parsed, dict):
+        raise ValueError("LLM response must be a JSON object")
+    return parsed
+
+
 def _minimized_normalized_message(*, normalized_message: dict, shorten: bool) -> dict[str, Any]:
     subject = str(normalized_message.get("subject_c14n") or "")
     body = str(normalized_message.get("body_text_c14n") or "")
@@ -142,11 +174,9 @@ class LLMAdapter:
             raise LLMAdapterError(str(e)) from e
 
         try:
-            parsed = json.loads(resp.content)
+            parsed = _parse_json_response(resp.content)
         except Exception as e:
             raise LLMAdapterError(f"LLM response is not JSON: {e}") from e
-        if not isinstance(parsed, dict):
-            raise LLMAdapterError("LLM response must be a JSON object")
 
         try:
             validate_contract_output(name=contract_name, version=contract_version, output=parsed)

@@ -130,6 +130,7 @@ class OllamaChatProvider(LLMProvider):
                 {"role": "user", "content": user_prompt},
             ],
             "stream": False,
+            "format": "json",
             "options": {
                 "temperature": float(temperature),
                 "num_predict": int(max_tokens),
@@ -157,6 +158,34 @@ class OllamaChatProvider(LLMProvider):
         message = obj.get("message") if isinstance(obj, dict) else None
         content = message.get("content") if isinstance(message, dict) else None
         if not isinstance(content, str) or not content.strip():
+            content = obj.get("response") if isinstance(obj, dict) else None
+        if not isinstance(content, str) or not content.strip():
+            # Fallback to /api/generate for models that don't return chat content.
+            fallback_payload: dict[str, Any] = {
+                "model": model,
+                "prompt": system_prompt + "\n\n" + user_prompt,
+                "stream": False,
+                "format": "json",
+                "options": {
+                    "temperature": float(temperature),
+                    "num_predict": int(max_tokens),
+                },
+            }
+            fallback_req = urllib.request.Request(
+                url=f"{self._host}/api/generate",
+                data=json.dumps(fallback_payload).encode("utf-8"),
+                headers={"Content-Type": "application/json"},
+                method="POST",
+            )
+            try:
+                with urllib.request.urlopen(fallback_req, timeout=60) as resp:
+                    raw = resp.read()
+            except Exception as e:
+                raise LLMProviderError(f"ollama generate request failed: {e}") from e
+            try:
+                obj = json.loads(raw.decode("utf-8"))
+            except Exception as e:
+                raise LLMProviderError(f"ollama generate response is not JSON: {e}") from e
             content = obj.get("response") if isinstance(obj, dict) else None
         if not isinstance(content, str) or not content.strip():
             raise LLMProviderError("ollama response missing content")

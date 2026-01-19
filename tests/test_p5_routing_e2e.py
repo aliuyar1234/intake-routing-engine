@@ -36,6 +36,7 @@ class TestP5RoutingE2E(unittest.TestCase):
                 classification_dir=root / "data" / "samples" / "gold",
                 routing_out_dir=base / "routing",
                 audit_logger=audit_logger,
+                config_path_override=root / "configs" / "test_baseline.yaml",
             )
 
             produced = runner.run()
@@ -63,4 +64,3 @@ class TestP5RoutingE2E(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

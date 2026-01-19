@@ -1,6 +1,6 @@
 {
   "created_at": "2026-01-17T08:00:09Z",
-  "decision_hash": "sha256:eed36d79d8f47866a294260d3769ce1fe19122d97d2f6459f42c47d8cca1b8a1",
+  "decision_hash": "sha256:d17fef2dc9857e1195e02bb030e53dbc68bb4d41cb6a6c1c4dbaa5cb08d55b9f",
   "message_id": "83a065a2-733b-5960-b63d-0d3360f5923e",
   "run_id": "4259d70a-ff16-54a2-8532-18cb4c62b03f",
   "schema_id": "urn:ieim:schema:identity-resolution-result:1.0.0",
@@ -8,10 +8,10 @@
   "selected_candidate": null,
   "status": "IDENTITY_NO_CANDIDATE",
   "thresholds": {
-    "confirmed_min_margin": 0.2,
-    "confirmed_min_score": 0.9,
-    "probable_min_margin": 0.12,
-    "probable_min_score": 0.75
+    "confirmed_min_margin": 0.15,
+    "confirmed_min_score": 0.85,
+    "probable_min_margin": 0.1,
+    "probable_min_score": 0.7
   },
   "top_k": []
 }

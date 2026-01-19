@@ -16,7 +16,7 @@ config:
   content: |
     pack:
       system_id: IEIM
-      canonical_spec_semver: "1.0.4"
+      canonical_spec_semver: "1.0.5"
 
     auth:
       oidc:
@@ -35,11 +35,14 @@ config:
           client_id: "disabled"
           client_secret: null
 
-    runtime:
-      determinism_mode: true
-      supported_languages:
-        - de
-        - en
+  runtime:
+    determinism_mode: true
+    supported_languages:
+      - de
+      - en
+
+  pipeline:
+    mode: LLM_FIRST
 
     incident:
       force_review: false
@@ -69,21 +72,33 @@ config:
         intercept: 0.8075
         slope: 0.15
 
-    classification:
-      min_confidence_for_auto: 0.75
-      rules_version: "1.0.0"
-      llm:
-        enabled: false
-        provider: "disabled"
-        model_name: "disabled"
-        model_version: "disabled"
+  classification:
+    min_confidence_for_auto: 0.75
+    rules_version: "1.0.0"
+    llm:
+      enabled: true
+      provider: "ollama"
+      model_name: "qwen_local_test:latest"
+      model_version: "qwen_local_test:latest"
         prompt_versions:
           classify: "1.0.0"
           extract: "1.0.0"
-        token_budgets:
-          classify: 700
-          extract: 900
-        max_calls_per_day: 0
+      token_budgets:
+        classify: 700
+        extract: 900
+      max_calls_per_day: 200
+      thresholds:
+        classification:
+          primary_intent_min: 0.72
+          product_line_min: 0.65
+          urgency_min: 0.60
+          risk_flag_min: 0.80
+        extraction:
+          high_value_entity_min: 0.85
+          other_entity_min: 0.70
+          high_value_entity_types:
+            - ENT_POLICY_NUMBER
+            - ENT_CLAIM_NUMBER
 
     extraction:
       iban_policy:

@@ -1,6 +1,6 @@
 {
   "created_at": "2026-01-17T08:00:06Z",
-  "decision_hash": "sha256:911263ab9fec9dec2cb8f7f217bc355bd338f2cc34aefc4e19dfbe4920ec8936",
+  "decision_hash": "sha256:bc0a467c4afd53a727b6303aae9e6667f99a890aec95649893c29807b494d332",
   "message_id": "af708e2b-42d1-5b36-81b3-70f1aa978073",
   "run_id": "8e41f141-3b87-514a-bd65-c1e361ecff14",
   "schema_id": "urn:ieim:schema:identity-resolution-result:1.0.0",
@@ -18,7 +18,7 @@
       }
     ],
     "rank": 1,
-    "score": 0.91,
+    "score": 0.92,
     "signals": [
       {
         "name": "SIG_POLICY_NUMBER_LOOKUP_MATCH",
@@ -30,10 +30,10 @@
   },
   "status": "IDENTITY_CONFIRMED",
   "thresholds": {
-    "confirmed_min_margin": 0.2,
-    "confirmed_min_score": 0.9,
-    "probable_min_margin": 0.12,
-    "probable_min_score": 0.75
+    "confirmed_min_margin": 0.15,
+    "confirmed_min_score": 0.85,
+    "probable_min_margin": 0.1,
+    "probable_min_score": 0.7
   },
   "top_k": [
     {
@@ -49,7 +49,7 @@
         }
       ],
       "rank": 1,
-      "score": 0.91,
+      "score": 0.92,
       "signals": [
         {
           "name": "SIG_POLICY_NUMBER_LOOKUP_MATCH",

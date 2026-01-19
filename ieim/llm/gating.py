@@ -25,6 +25,9 @@ def should_call_llm_classify(*, config: IEIMConfig, deterministic_classification
     if risk_flags:
         return LLMGateDecision(allowed=False, reason="RISK_FLAGS_PRESENT")
 
+    if config.pipeline.mode == "LLM_FIRST":
+        return LLMGateDecision(allowed=True, reason="LLM_FIRST_MODE")
+
     primary = deterministic_classification.get("primary_intent") or {}
     conf = float(primary.get("confidence") or 0.0)
     if conf >= float(config.classification.min_confidence_for_auto):

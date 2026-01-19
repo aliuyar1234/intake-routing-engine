@@ -137,9 +137,12 @@ class ReprocessRunner:
     message_id: str
     crm_mapping: dict[str, list[str]]
     history_dir: Optional[Path] = None
+    config_path_override: Optional[Path] = None
 
     def _load_config(self, *, nm: dict) -> IEIMConfig:
-        config_path = select_config_path_for_message(repo_root=self.repo_root, normalized_message=nm)
+        config_path = self.config_path_override or select_config_path_for_message(
+            repo_root=self.repo_root, normalized_message=nm
+        )
         return load_config(path=config_path)
 
     def run(self) -> dict:
@@ -233,7 +236,9 @@ class ReprocessRunner:
             return report
 
         # Identity
-        id_config_path = select_config_path_for_message(repo_root=self.repo_root, normalized_message=nm_reprocess)
+        id_config_path = self.config_path_override or select_config_path_for_message(
+            repo_root=self.repo_root, normalized_message=nm_reprocess
+        )
         id_cfg = load_identity_config(path=id_config_path)
         resolver = IdentityResolver(
             config=id_cfg,

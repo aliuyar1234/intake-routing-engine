@@ -44,6 +44,7 @@ class TestP3IdentityResolutionE2E(unittest.TestCase):
                 claims_adapter=InMemoryClaimsAdapter(),
                 crm_adapter=crm,
                 audit_logger=audit_logger,
+                config_path_override=root / "configs" / "test_baseline.yaml",
             )
 
             produced = runner.run()

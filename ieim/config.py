@@ -73,6 +73,33 @@ class LLMConfig:
     prompt_versions: dict[str, str]
     token_budgets: dict[str, int]
     max_calls_per_day: int
+    thresholds: "LLMThresholds"
+
+
+@dataclass(frozen=True)
+class LLMClassificationThresholds:
+    primary_intent_min: float
+    product_line_min: float
+    urgency_min: float
+    risk_flag_min: float
+
+
+@dataclass(frozen=True)
+class LLMExtractionThresholds:
+    high_value_entity_min: float
+    other_entity_min: float
+    high_value_entity_types: Sequence[str]
+
+
+@dataclass(frozen=True)
+class LLMThresholds:
+    classification: LLMClassificationThresholds
+    extraction: LLMExtractionThresholds
+
+
+@dataclass(frozen=True)
+class PipelineConfig:
+    mode: str
 
 
 @dataclass(frozen=True)
@@ -115,6 +142,7 @@ class IEIMConfig:
     config_sha256: str
     determinism_mode: bool
     supported_languages: Sequence[str]
+    pipeline: PipelineConfig
     incident: IncidentConfig
     classification: ClassificationConfig
     extraction: ExtractionConfig
@@ -141,6 +169,11 @@ def load_config(*, path: Path) -> IEIMConfig:
         raise ValueError("runtime.supported_languages must be a list of non-empty strings")
     supported_languages = tuple(supported_languages_raw)
 
+    pipeline = _require_dict(cfg.get("pipeline"), path="pipeline")
+    pipeline_mode = _require_str(pipeline.get("mode"), path="pipeline.mode")
+    if pipeline_mode not in {"BASELINE", "LLM_FIRST"}:
+        raise ValueError("pipeline.mode must be BASELINE or LLM_FIRST")
+
     classification = _require_dict(cfg.get("classification"), path="classification")
     min_confidence_for_auto = _require_float(
         classification.get("min_confidence_for_auto"), path="classification.min_confidence_for_auto"
@@ -162,6 +195,53 @@ def load_config(*, path: Path) -> IEIMConfig:
             v, path=f"classification.llm.token_budgets.{k}"
         )
 
+    thresholds_obj = _require_dict(llm.get("thresholds"), path="classification.llm.thresholds")
+    cls_thresholds_obj = _require_dict(
+        thresholds_obj.get("classification"), path="classification.llm.thresholds.classification"
+    )
+    ex_thresholds_obj = _require_dict(
+        thresholds_obj.get("extraction"), path="classification.llm.thresholds.extraction"
+    )
+    high_value_entity_types_raw = ex_thresholds_obj.get("high_value_entity_types")
+    if not isinstance(high_value_entity_types_raw, list) or not all(
+        isinstance(x, str) and x for x in high_value_entity_types_raw
+    ):
+        raise ValueError(
+            "classification.llm.thresholds.extraction.high_value_entity_types must be a list of non-empty strings"
+        )
+
+    thresholds = LLMThresholds(
+        classification=LLMClassificationThresholds(
+            primary_intent_min=_require_float(
+                cls_thresholds_obj.get("primary_intent_min"),
+                path="classification.llm.thresholds.classification.primary_intent_min",
+            ),
+            product_line_min=_require_float(
+                cls_thresholds_obj.get("product_line_min"),
+                path="classification.llm.thresholds.classification.product_line_min",
+            ),
+            urgency_min=_require_float(
+                cls_thresholds_obj.get("urgency_min"),
+                path="classification.llm.thresholds.classification.urgency_min",
+            ),
+            risk_flag_min=_require_float(
+                cls_thresholds_obj.get("risk_flag_min"),
+                path="classification.llm.thresholds.classification.risk_flag_min",
+            ),
+        ),
+        extraction=LLMExtractionThresholds(
+            high_value_entity_min=_require_float(
+                ex_thresholds_obj.get("high_value_entity_min"),
+                path="classification.llm.thresholds.extraction.high_value_entity_min",
+            ),
+            other_entity_min=_require_float(
+                ex_thresholds_obj.get("other_entity_min"),
+                path="classification.llm.thresholds.extraction.other_entity_min",
+            ),
+            high_value_entity_types=tuple(high_value_entity_types_raw),
+        ),
+    )
+
     llm_cfg = LLMConfig(
         enabled=_require_bool(llm.get("enabled"), path="classification.llm.enabled"),
         provider=_require_str(llm.get("provider"), path="classification.llm.provider"),
@@ -170,6 +250,7 @@ def load_config(*, path: Path) -> IEIMConfig:
         prompt_versions=prompt_versions,
         token_budgets=token_budgets,
         max_calls_per_day=_require_int(llm.get("max_calls_per_day"), path="classification.llm.max_calls_per_day"),
+        thresholds=thresholds,
     )
 
     extraction = _require_dict(cfg.get("extraction"), path="extraction")
@@ -212,6 +293,7 @@ def load_config(*, path: Path) -> IEIMConfig:
         config_sha256=_sha256_prefixed(data_bytes),
         determinism_mode=determinism_mode,
         supported_languages=supported_languages,
+        pipeline=PipelineConfig(mode=pipeline_mode),
         incident=IncidentConfig(
             force_review=force_review,
             force_review_queue_id=force_review_queue_id,
