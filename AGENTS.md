@@ -1,4 +1,4 @@
-# AGENTS - Contributor Rules (IEIM)
+# AGENTS - Contributor Rules (Intake Routing Engine)
 
 You are implementing IEIM in this repository.
 

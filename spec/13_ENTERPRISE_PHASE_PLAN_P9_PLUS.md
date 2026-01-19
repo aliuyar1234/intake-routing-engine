@@ -1,6 +1,6 @@
 # IEIM Enterprise-Ready Phase Plan (P9+) — Codex Implementation Guide
 
-**Repo:** Insurance Email Input Manager (IEIM) v1.0.3  
+**Repo:** Intake Routing Engine v1.0.4  
 **Goal:** Extend the existing DONE/PASSED phases (P0–P8) into an **installable, operable, enterprise-ready open-source system**.  
 **Non‑negotiables:** fail‑closed default, SSOT canonical definitions in `spec/00_CANONICAL.md`, append‑only raw + audit stores, deterministic decision hashing (timestamp‑free), audit events for every stage, binding quality gates, strict unfinished‑marker scanning.
 

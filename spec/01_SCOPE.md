@@ -1,6 +1,6 @@
 # Scope
 
-IEIM (Insurance Email Input Manager) is an enterprise system that processes inbound insurance emails (including attachments) from **ingestion** to **deterministic routing** into teams/queues/workflows, with **identity resolution**, **classification**, **entity extraction**, **immutable auditing**, and **human-in-the-loop (HITL)** gates for uncertainty.
+IEIM (Intake Routing Engine) is an enterprise system that processes inbound emails (including attachments) from **ingestion** to **deterministic routing** into teams/queues/workflows, with **identity resolution**, **classification**, **entity extraction**, **immutable auditing**, and **human-in-the-loop (HITL)** gates for uncertainty.
 
 The design is **fail-closed** by default: if the system cannot safely associate to a customer/policy/claim or cannot safely route, it produces a review or request-for-information outcome rather than silently making a wrong decision.
 

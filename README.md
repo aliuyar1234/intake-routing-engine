@@ -1,8 +1,8 @@
-# Insurance Email Input Manager (IEIM) v1.0.3
+# Intake Routing Engine v1.0.4
 
-IEIM is an **open-source, self-hosted email intake system for insurers**. It ingests inbound emails (with attachments), extracts structured facts, applies deterministic routing, and creates auditable downstream actions (case/ticket, drafts, or human review) with an immutable audit trail.
+Intake Routing Engine is an **open-source, self-hosted email intake and routing system**. It ingests inbound emails (with attachments), extracts structured facts, applies deterministic routing, and creates auditable downstream actions (case/ticket, drafts, or human review) with an immutable audit trail.
 
-IEIM turns inbound insurance emails (including attachments) into **auditable, deterministic operational outcomes**:
+It turns inbound emails (including attachments) into **auditable, deterministic operational outcomes**:
 ingest -> normalize -> attachment processing -> identity resolution -> classify/extract -> deterministic routing -> case/ticket actions -> HITL review (when needed) -> immutable audit log.
 
 ## What you get

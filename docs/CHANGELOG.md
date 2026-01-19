@@ -1,12 +1,16 @@
 # Changelog
 
-All notable changes to the Insurance Email Input Manager (IEIM) SSOT pack and reference implementation are documented here.
+All notable changes to Intake Routing Engine (IEIM) are documented here.
 
 This project follows Semantic Versioning.
 
+## 1.0.4
+
+- Renamed the GitHub repository to `intake-routing-engine` and updated internal identifiers and docs.
+
 ## 1.0.3
 
-- Renamed the GitHub repository to `insurance-email-input-manager` and updated internal identifiers and docs.
+- Renamed the GitHub repository (intermediate) and updated internal identifiers and docs.
 - Fixed Mermaid rendering in `spec/02_ARCHITECTURE.md`.
 
 ## 1.0.2
