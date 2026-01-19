@@ -1,15 +1,19 @@
-# Insurance Email Input Manager (IEIM) - SSOT Pack v1.0.2
+# Insurance Email Input Manager (IEIM) v1.0.2
 
-This repository is a **Single Source of Truth (SSOT) pack** for building an Insurance Email Input Manager (IEIM) as a production system. It combines specifications, schemas, configs, tests, and runbooks into a phase-by-phase delivery plan with binding quality gates.
+IEIM is an **open-source, self-hosted email intake system for insurers**. It ingests inbound emails (with attachments), extracts structured facts, applies deterministic routing, and creates auditable downstream actions (case/ticket, drafts, or human review) with an immutable audit trail.
 
-IEIM's objective is to turn inbound insurance emails (including attachments) into **auditable, deterministic operational outcomes**:
+IEIM turns inbound insurance emails (including attachments) into **auditable, deterministic operational outcomes**:
 ingest -> normalize -> attachment processing -> identity resolution -> classify/extract -> deterministic routing -> case/ticket actions -> HITL review (when needed) -> immutable audit log.
 
-## What this pack is (and is not)
+## What you get
 
-- This is an **implementation handoff pack**: stable contracts, canonical labels/IDs, rulesets, and verification to build against.
-- This repository includes a **reference implementation** (Python) to execute the phases and validate the contracts and gates.
-- This is not a hosted SaaS. You deploy it in your own environment (Compose or Kubernetes/Helm).
+- Production-ready pipeline services (API, worker, scheduler) with fail-closed defaults.
+- Docker Compose distributions (`starter` and `production`) and a Kubernetes Helm chart.
+- Adapters and mocks for enterprise integration (mail ingest, identity directory, case/ticket).
+- Human-in-the-loop (HITL) review API and minimal web UI.
+- Binding quality gates, deterministic decision hashing, and an append-only audit hash chain.
+
+This is not a hosted SaaS. You deploy it in your own environment (Compose or Kubernetes/Helm).
 
 ## Architecture
 
@@ -40,17 +44,34 @@ flowchart LR
 
 Details: `spec/02_ARCHITECTURE.md`
 
+## Quickstart
+
+From the repo root:
+
+```bash
+bash scripts/verify_pack.sh
+python -B -m unittest discover -s tests -p "test_*.py"
+```
+
+Run locally with Docker Compose (starter):
+
+```bash
+docker compose -f deploy/compose/starter/docker-compose.yml up -d --build
+python ieimctl.py demo run --config configs/dev.yaml --samples data/samples
+docker compose -f deploy/compose/starter/docker-compose.yml down -v
+```
+
 ## Design principles (product and compliance)
 
 - **Fail-closed by default**: uncertainty routes to review or request-info drafts.
 - **Immutability**: raw MIME/attachments are append-only; audit events are append-only with a hash chain.
 - **Determinism mode**: reproducible decisions; decision hashes are timestamp-free.
-- **Single Definition Rule**: canonical labels/IDs are defined only in `spec/00_CANONICAL.md`.
+- **Canonical contracts**: canonical labels/IDs and schema IDs are defined in `spec/00_CANONICAL.md` and enforced in CI.
 - **Human-in-the-loop (HITL)**: reviewer actions are stored as versioned correction records and audited.
 
 ## Repository map (where to look)
 
-- SSOT and labels: `spec/00_CANONICAL.md`
+- Canonical IDs and labels: `spec/00_CANONICAL.md`
 - Scope and requirements: `spec/01_SCOPE.md`
 - Phase plan and gates: `spec/09_PHASE_PLAN.md` and `QUALITY_GATES.md`
 - Enterprise-ready roadmap (P9+): `spec/13_ENTERPRISE_PHASE_PLAN_P9_PLUS.md`
@@ -62,21 +83,6 @@ Details: `spec/02_ARCHITECTURE.md`
 - Reference implementation: `ieim/` and `ieimctl.py`
 - Verification scripts: `scripts/`
 - Sample corpus + gold expectations: `data/samples/`
-
-## Quickstart (verification)
-
-From the repo root:
-
-```bash
-bash scripts/verify_pack.sh
-python -B -m unittest discover -s tests -p "test_*.py"
-```
-
-The CLI also exposes:
-
-```bash
-python ieimctl.py pack verify
-```
 
 ## Install
 
