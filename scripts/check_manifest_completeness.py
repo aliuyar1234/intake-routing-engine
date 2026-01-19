@@ -10,9 +10,17 @@ MANIFEST = ROOT / "MANIFEST.sha256"
 def sha256_hex(b: bytes) -> str:
     return hashlib.sha256(b).hexdigest()
 
+def _maybe_normalize_text_bytes(b: bytes) -> bytes:
+    # Make MANIFEST stable across platforms with different Git line-ending behavior.
+    # This is intentionally conservative: if a file looks binary (NUL byte), do not
+    # rewrite bytes before hashing.
+    if b"\x00" in b:
+        return b
+    return b.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+
 
 def compute_file_hash(path: Path) -> str:
-    return sha256_hex(path.read_bytes())
+    return sha256_hex(_maybe_normalize_text_bytes(path.read_bytes()))
 
 
 def parse_manifest(text: str):
@@ -31,11 +39,24 @@ def parse_manifest(text: str):
 
 def list_all_files():
     files = []
+    excluded_top_level = {
+        "audit",
+        "hitl",
+        "observability",
+        "out",
+        "raw_store",
+        "state",
+        ".venv",
+        "venv",
+        "ENV",
+    }
     for p in ROOT.rglob("*"):
         if p.is_dir():
             continue
         rel = p.relative_to(ROOT)
         if rel.as_posix() == "MANIFEST.sha256":
+            continue
+        if rel.parts and rel.parts[0] in excluded_top_level:
             continue
         if ".git" in rel.parts or "__pycache__" in rel.parts:
             continue
