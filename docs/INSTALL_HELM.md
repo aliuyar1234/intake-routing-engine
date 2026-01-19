@@ -52,11 +52,14 @@ OWNER="<github_owner>"
 
 helm install ieim "ieim-${VERSION}.tgz" \
   --set image.api.repository="ghcr.io/${OWNER}/ieim-api" \
+  --set image.api.tag="${VERSION}" \
   --set image.worker.repository="ghcr.io/${OWNER}/ieim-worker" \
-  --set image.scheduler.repository="ghcr.io/${OWNER}/ieim-scheduler"
+  --set image.worker.tag="${VERSION}" \
+  --set image.scheduler.repository="ghcr.io/${OWNER}/ieim-scheduler" \
+  --set image.scheduler.tag="${VERSION}"
 ```
 
-The chart defaults the image tag to the chart `appVersion` when `image.*.tag` is empty.
+Pinning the image tags to the release version avoids relying on chart defaults.
 
 ## Security defaults
 
