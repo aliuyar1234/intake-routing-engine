@@ -6,7 +6,7 @@ metadata:
     {{- include "ieim.labels" . | nindent 4 }}
     app.kubernetes.io/component: api
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicas.api }}
   selector:
     matchLabels:
       {{- include "ieim.selectorLabels" . | nindent 6 }}

@@ -57,6 +57,7 @@ This file is the **only** authoritative location for:
 - SCHEMA_ID_ROUTING_DECISION: "urn:ieim:schema:routing-decision:1.0.0"
 - SCHEMA_ID_AUDIT_EVENT: "urn:ieim:schema:audit-event:1.0.0"
 - SCHEMA_ID_CORRECTION_RECORD: "urn:ieim:schema:correction-record:1.0.0"
+- SCHEMA_ID_LOADTEST_REPORT: "urn:ieim:schema:loadtest-report:1.0.0"
 
 ## 5) Canonical enums and label sets
 
@@ -266,6 +267,9 @@ If product line is PROD_UNKNOWN and intent implies claims or policy service, rou
 
 - CLI_BIN: `ieimctl`
 - CLI_COMMANDS:
+  - `ieimctl version`
+  - `ieimctl upgrade check`
+  - `ieimctl upgrade migrate`
   - `ieimctl pack verify`
   - `ieimctl ingest simulate`
   - `ieimctl case simulate`

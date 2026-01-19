@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -16,12 +17,15 @@ from ieim.hitl.review_store import FileReviewStore
 from ieim.hitl.service import HitlService
 from ieim.identity.config_select import select_config_path_for_message
 from ieim.ops.load_test import run_load_test
+from ieim.ops.loadtest_profiles import list_profiles, run_profile
 from ieim.ops.retention import load_retention_config, run_raw_retention
 from ieim.pipeline.p6_reprocess import ReprocessRunner
 from ieim.raw_store import sha256_prefixed
 from ieim.route.evaluator import evaluate_routing
 from ieim.route.ruleset import load_routing_ruleset
 from ieim.runtime.config import validate_config_file
+from ieim.store.upgrade import check_upgrade
+from ieim.version import read_repo_version
 
 
 def _require_dict(obj: Any, *, path: str) -> dict[str, Any]:
@@ -1086,14 +1090,23 @@ def cmd_loadtest_run(args: argparse.Namespace) -> int:
         cfg_path = _resolve_repo_path(repo_root, args.config)
 
     try:
-        report = run_load_test(
-            repo_root=repo_root,
-            normalized_dir=_resolve_repo_path(repo_root, args.normalized_dir),
-            attachments_dir=_resolve_repo_path(repo_root, args.attachments_dir),
-            iterations=int(args.iterations),
-            config_path=cfg_path,
-            crm_mapping=crm_mapping,
-        )
+        if getattr(args, "profile", None):
+            report = run_profile(
+                repo_root=repo_root,
+                profile=str(args.profile),
+                config_path=cfg_path,
+                crm_mapping=crm_mapping,
+            )
+        else:
+            report = run_load_test(
+                repo_root=repo_root,
+                normalized_dir=_resolve_repo_path(repo_root, args.normalized_dir),
+                attachments_dir=_resolve_repo_path(repo_root, args.attachments_dir),
+                iterations=int(args.iterations),
+                profile="custom",
+                config_path=cfg_path,
+                crm_mapping=crm_mapping,
+            )
     except Exception as e:
         print(f"LOADTEST_FAILED: {e}")
         return 60
@@ -1113,9 +1126,115 @@ def cmd_loadtest_run(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_version(args: argparse.Namespace) -> int:
+    repo_root = Path(__file__).resolve().parent
+    try:
+        version = read_repo_version(repo_root=repo_root)
+    except Exception as e:
+        print(f"VERSION_FAILED: {e}")
+        return 60
+    print(version)
+    return 0
+
+
+def _resolve_pg_dsn(args: argparse.Namespace) -> str | None:
+    v = getattr(args, "pg_dsn", None)
+    if isinstance(v, str) and v.strip():
+        return v.strip()
+    env = os.getenv("IEIM_PG_DSN")
+    if isinstance(env, str) and env.strip():
+        return env.strip()
+    return None
+
+
+def cmd_upgrade_check(args: argparse.Namespace) -> int:
+    repo_root = Path(__file__).resolve().parent
+    cfg_path = _resolve_repo_path(repo_root, args.config)
+    try:
+        validate_config_file(path=cfg_path)
+    except Exception as e:
+        print(f"UPGRADE_CHECK_FAILED: invalid config: {e}")
+        return 10
+
+    pg_dsn = _resolve_pg_dsn(args)
+    result = check_upgrade(repo_root=repo_root, pg_dsn=pg_dsn)
+    if result.status == "OFFLINE_OK":
+        print("UPGRADE_CHECK_WARN: no --pg-dsn / IEIM_PG_DSN set; skipping database migration state check")
+        print("UPGRADE_CHECK_OK")
+        return 0
+
+    if result.ok:
+        print("UPGRADE_CHECK_OK")
+        return 0
+
+    print(f"UPGRADE_CHECK_FAILED: status={result.status}")
+    if result.unknown_migrations:
+        print(f"UNKNOWN_MIGRATIONS: {list(result.unknown_migrations)[:50]}")
+    if result.pending_migrations:
+        print(f"PENDING_MIGRATIONS: {list(result.pending_migrations)[:50]}")
+    if result.error:
+        print(f"ERROR: {result.error}")
+
+    if result.status in {"PSYCOPG_MISSING", "DB_UNAVAILABLE"}:
+        return 40
+    return 60
+
+
+def cmd_upgrade_migrate(args: argparse.Namespace) -> int:
+    repo_root = Path(__file__).resolve().parent
+    cfg_path = _resolve_repo_path(repo_root, args.config)
+    try:
+        validate_config_file(path=cfg_path)
+    except Exception as e:
+        print(f"UPGRADE_MIGRATE_FAILED: invalid config: {e}")
+        return 10
+
+    pg_dsn = _resolve_pg_dsn(args)
+    if pg_dsn is None:
+        print("UPGRADE_MIGRATE_FAILED: missing --pg-dsn (or IEIM_PG_DSN env var)")
+        return 10
+
+    try:
+        from ieim.store.migrate import apply_postgres_migrations
+
+        apply_postgres_migrations(dsn=pg_dsn, repo_root=repo_root)
+    except Exception as e:
+        print(f"UPGRADE_MIGRATE_FAILED: {e}")
+        if "psycopg is required" in str(e).lower():
+            return 40
+        return 60
+
+    print("UPGRADE_MIGRATE_OK")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="ieimctl")
     sub = parser.add_subparsers(dest="command", required=True)
+
+    version = sub.add_parser("version")
+    version.set_defaults(func=cmd_version)
+
+    upgrade = sub.add_parser("upgrade")
+    upgrade_sub = upgrade.add_subparsers(dest="upgrade_command", required=True)
+
+    upgrade_check = upgrade_sub.add_parser("check")
+    upgrade_check.add_argument("--config", default="configs/prod.yaml", help="Config file (repo-relative).")
+    upgrade_check.add_argument(
+        "--pg-dsn",
+        default=None,
+        help="Optional Postgres DSN (defaults to IEIM_PG_DSN env var).",
+    )
+    upgrade_check.set_defaults(func=cmd_upgrade_check)
+
+    upgrade_migrate = upgrade_sub.add_parser("migrate")
+    upgrade_migrate.add_argument("--config", default="configs/prod.yaml", help="Config file (repo-relative).")
+    upgrade_migrate.add_argument(
+        "--pg-dsn",
+        default=None,
+        help="Postgres DSN (defaults to IEIM_PG_DSN env var).",
+    )
+    upgrade_migrate.set_defaults(func=cmd_upgrade_migrate)
 
     pack = sub.add_parser("pack")
     pack_sub = pack.add_subparsers(dest="pack_command", required=True)
@@ -1321,6 +1440,11 @@ def main(argv: list[str] | None = None) -> int:
     loadtest_sub = loadtest.add_subparsers(dest="loadtest_command", required=True)
 
     loadtest_run = loadtest_sub.add_parser("run")
+    loadtest_run.add_argument(
+        "--profile",
+        default=None,
+        help=f"Optional loadtest profile ({', '.join(list_profiles())}). If set, overrides --normalized-dir/--attachments-dir/--iterations.",
+    )
     loadtest_run.add_argument("--normalized-dir", default="data/samples/emails")
     loadtest_run.add_argument("--attachments-dir", default="data/samples/attachments")
     loadtest_run.add_argument("--iterations", default=1, type=int)

@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ieim:schema:loadtest-report:1.0.0",
+  "title": "IEIM Load Test Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "status",
+    "profile",
+    "config_path",
+    "messages",
+    "iterations",
+    "duration_ms_total",
+    "throughput_msgs_per_s",
+    "stage_ms"
+  ],
+  "properties": {
+    "status": { "type": "string", "enum": ["OK", "FAILED"] },
+    "profile": { "type": "string", "minLength": 1 },
+    "config_path": { "type": "string", "minLength": 1 },
+    "messages": { "type": "integer", "minimum": 0 },
+    "iterations": { "type": "integer", "minimum": 1 },
+    "duration_ms_total": { "type": "integer", "minimum": 0 },
+    "throughput_msgs_per_s": { "type": "number", "minimum": 0 },
+    "stage_ms": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["IDENTITY", "CLASSIFY", "EXTRACT", "ROUTE"],
+      "properties": {
+        "IDENTITY": { "$ref": "#/$defs/stage_stats" },
+        "CLASSIFY": { "$ref": "#/$defs/stage_stats" },
+        "EXTRACT": { "$ref": "#/$defs/stage_stats" },
+        "ROUTE": { "$ref": "#/$defs/stage_stats" }
+      }
+    }
+  },
+  "$defs": {
+    "stage_stats": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["count", "avg_ms", "p50_ms", "p95_ms", "max_ms"],
+      "properties": {
+        "count": { "type": "integer", "minimum": 0 },
+        "avg_ms": { "type": "number", "minimum": 0 },
+        "p50_ms": { "type": "number", "minimum": 0 },
+        "p95_ms": { "type": "number", "minimum": 0 },
+        "max_ms": { "type": "number", "minimum": 0 }
+      }
+    }
+  }
+}
+

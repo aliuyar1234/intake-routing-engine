@@ -63,6 +63,7 @@ def _pctl(values: list[float], pct: float) -> float:
 @dataclass(frozen=True)
 class LoadTestReport:
     status: str
+    profile: str
     config_path: str
     messages: int
     iterations: int
@@ -73,6 +74,7 @@ class LoadTestReport:
     def to_dict(self) -> dict[str, Any]:
         return {
             "status": self.status,
+            "profile": self.profile,
             "config_path": self.config_path,
             "messages": self.messages,
             "iterations": self.iterations,
@@ -88,11 +90,14 @@ def run_load_test(
     normalized_dir: Path,
     attachments_dir: Path,
     iterations: int,
+    profile: str = "custom",
     config_path: Optional[Path] = None,
     crm_mapping: Optional[dict[str, list[str]]] = None,
 ) -> LoadTestReport:
     if iterations <= 0:
         raise ValueError("iterations must be >= 1")
+    if not isinstance(profile, str) or not profile:
+        raise ValueError("profile must be a non-empty string")
 
     nms = sorted(normalized_dir.glob("*.json"))
     if not nms:
@@ -187,6 +192,7 @@ def run_load_test(
             cfg_path_s = config_path.as_posix()
     return LoadTestReport(
         status="OK",
+        profile=profile,
         config_path=cfg_path_s,
         messages=len(nms),
         iterations=iterations,

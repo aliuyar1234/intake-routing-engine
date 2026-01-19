@@ -197,19 +197,19 @@ Gate G-015 (PASSED):
 ## P15 - Release engineering, SBOM, signing, and upgrade path
 
 Tasks:
-- T-064 Versioning and release metadata (OPEN)
-- T-065 Container build and publish pipeline (OPEN)
-- T-066 SBOM generation and signing (OPEN)
-- T-067 Database migrations and upgrade checks (OPEN)
+- T-064 Versioning and release metadata (DONE)
+- T-065 Container build and publish pipeline (DONE)
+- T-066 SBOM generation and signing (DONE)
+- T-067 Database migrations and upgrade checks (DONE)
 
-Gate G-016 (NOT STARTED):
+Gate G-016 (PASSED):
 - Release readiness (reproducible artifacts + upgrade checks)
 
 ## P16 - Performance, scaling, and enterprise acceptance benchmarks
 
 Tasks:
-- T-068 Load test profiles and reports (OPEN)
-- T-069 Worker scaling guidance (OPEN)
+- T-068 Load test profiles and reports (DONE)
+- T-069 Worker scaling guidance (DONE)
 
-Gate G-017 (NOT STARTED):
+Gate G-017 (PASSED):
 - Performance gate (meets agreed throughput/latency targets)

@@ -6,7 +6,7 @@ metadata:
     {{- include "ieim.labels" . | nindent 4 }}
     app.kubernetes.io/component: scheduler
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicas.scheduler }}
   selector:
     matchLabels:
       {{- include "ieim.selectorLabels" . | nindent 6 }}

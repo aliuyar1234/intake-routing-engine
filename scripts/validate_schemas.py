@@ -21,7 +21,8 @@ FILE_TO_CANONICAL_KEY = {
     "extraction_result.schema.json": "SCHEMA_ID_EXTRACTION_RESULT",
     "routing_decision.schema.json": "SCHEMA_ID_ROUTING_DECISION",
     "audit_event.schema.json": "SCHEMA_ID_AUDIT_EVENT",
-    "correction_record.schema.json": "SCHEMA_ID_CORRECTION_RECORD"
+    "correction_record.schema.json": "SCHEMA_ID_CORRECTION_RECORD",
+    "loadtest_report.schema.json": "SCHEMA_ID_LOADTEST_REPORT",
 }
 
 

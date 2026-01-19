@@ -178,6 +178,18 @@ resources:
       cpu: 200m
       memory: 256Mi
 
+replicas:
+  api: 1
+  worker: 1
+  scheduler: 1
+
+autoscaling:
+  worker:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 70
+
 external:
   postgres:
     host: ""
